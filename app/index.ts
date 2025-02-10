@@ -5,6 +5,9 @@ import { Product } from './pages/product.page';
 import { Contact } from './pages/contact.page';
 import { Category } from './pages/category.page';
 import { Rentals } from './pages/rentals.page';
+import { Header } from './components/header.component';
+import { Checkout } from './pages/checkout.page';
+import { API } from '../api';
 
 export class Application extends PageHolder {
   public login = new Login(this.page);
@@ -13,17 +16,30 @@ export class Application extends PageHolder {
   public product = new Product(this.page);
   public contact = new Contact(this.page);
   public rentals = new Rentals(this.page);
+  public header = new Header(this.page);
+  public checkout = new Checkout(this.page);
+  public api = new API(this.page.request);
 
-  //   async headlessLogin(data: { email: string; password: string }) {
-  //     const token = (await this.api.auth.login(data)).token;
-  //     await this.setTokenToLocalStorage(token);
-  //   }
 
-  //   async setTokenToLocalStorage(token: string) {
-  //     await this.page.goto("/", { waitUntil: "commit" });
-  //     await this.page.evaluate(
-  //       (_token) => window.localStorage.setItem("token", _token),
-  //       token
-  //     );
-  // }
+    async headlessLogin(data: { email: string; password: string }) {
+      try {
+        const response = await this.api.auth.login(data);
+        const token = response.access_token;
+        if (!token) {
+          throw new Error('No access token received');
+        }
+        await this.setTokenToLocalStorage(token);
+        console.log('Token set to local storage successfully');
+      } catch (error) {
+        console.error('Error during headless login:', error);
+      }
+    }
+
+    async setTokenToLocalStorage(token: string) {
+      await this.page.goto("/", { waitUntil: "commit" });
+      await this.page.evaluate(
+        (_token) => window.localStorage.setItem("auth-token", _token),
+        token
+      );
+  }
 }

@@ -16,6 +16,7 @@
     "@eslint/compat": "^1.2.6",
     "@eslint/js": "^9.17.0",
     "@playwright/test": "1.50.1",
+    "@types/faker": "^6.6.8",
     "@types/node": "^22.10.2",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/parser": "^8.23.0",
@@ -31,6 +32,7 @@
   },
   "dependencies": {
     "dotenv": "^16.4.7",
-    "envalid": "^8.0.0"
+    "envalid": "^8.0.0",
+    "faker": "^5.5.3"
   }
 }

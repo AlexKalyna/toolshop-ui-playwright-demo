@@ -15,7 +15,7 @@ export class Category extends AppPage {
     }
 
     @step()
-    async selectItem(itemName: string): Promise<void> {
+    async selectItem(itemName: string) {
         await this.page.getByText(itemName).click();
     }
 

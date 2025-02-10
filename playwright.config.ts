@@ -13,7 +13,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  reporter: [ ['html'], ['list']],
+  reporter: [ ['html'], ['list', { printSteps: true, }]],
 
   use: {
     baseURL: process.env.BASE_URL,
@@ -27,13 +27,13 @@ export default defineConfig({
   },
 
   projects: [
-    {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
-    },
+    // {
+    //   name: 'setup',
+    //   testMatch: /.*\.setup\.ts/,
+    // },
     {
       name: 'chromium',
-      dependencies: ['setup'],
+      // dependencies: ['setup'],
       use: { ...devices['Desktop Chrome'], permissions: ["clipboard-read"] },
     },
 
