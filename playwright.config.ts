@@ -1,9 +1,8 @@
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 import { defineConfig, devices } from '@playwright/test';
-// import { env } from "./env";
+import { env } from "./env";
 import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-
+// dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({
   testDir: './tests',
@@ -13,17 +12,17 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  reporter: [ ['html'], ['list', { printSteps: true, }]],
+  reporter: [['html'], ['list', { printSteps: true }]],
 
   use: {
     baseURL: process.env.BASE_URL,
-    testIdAttribute: "data-test",
+    testIdAttribute: 'data-test',
     trace: 'on',
     actionTimeout: 0,
     ignoreHTTPSErrors: true,
-    video: "retain-on-failure",
-    screenshot: "only-on-failure",
-    headless: true,
+    video: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    headless: true
   },
 
   projects: [
@@ -34,8 +33,8 @@ export default defineConfig({
     {
       name: 'chromium',
       // dependencies: ['setup'],
-      use: { ...devices['Desktop Chrome'], permissions: ["clipboard-read"] },
-    },
+      use: { ...devices['Desktop Chrome'], permissions: ['clipboard-read'] }
+    }
 
     // {
     //   name: 'webkit',
@@ -47,7 +46,6 @@ export default defineConfig({
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },
     // },
-
 
     /* Test against mobile viewports. */
     // {
@@ -68,7 +66,7 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
-  ],
+  ]
 
   /* Run your local dev server before starting the tests */
   // webServer: {
