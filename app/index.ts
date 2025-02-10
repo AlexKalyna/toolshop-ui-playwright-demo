@@ -20,26 +20,22 @@ export class Application extends PageHolder {
   public checkout = new Checkout(this.page);
   public api = new API(this.page.request);
 
-
-    async headlessLogin(data: { email: string; password: string }) {
-      try {
-        const response = await this.api.auth.login(data);
-        const token = response.access_token;
-        if (!token) {
-          throw new Error('No access token received');
-        }
-        await this.setTokenToLocalStorage(token);
-        console.log('Token set to local storage successfully');
-      } catch (error) {
-        console.error('Error during headless login:', error);
+  async headlessLogin(data: { email: string; password: string }) {
+    try {
+      const response = await this.api.auth.login(data);
+      const token = response.access_token;
+      if (!token) {
+        throw new Error('No access token received');
       }
+      await this.setTokenToLocalStorage(token);
+      console.log('Token set to local storage successfully');
+    } catch (error) {
+      console.error('Error during headless login:', error);
     }
+  }
 
-    async setTokenToLocalStorage(token: string) {
-      await this.page.goto("/", { waitUntil: "commit" });
-      await this.page.evaluate(
-        (_token) => window.localStorage.setItem("auth-token", _token),
-        token
-      );
+  async setTokenToLocalStorage(token: string) {
+    await this.page.goto('/', { waitUntil: 'commit' });
+    await this.page.evaluate(_token => window.localStorage.setItem('auth-token', _token), token);
   }
 }

@@ -1,12 +1,14 @@
 {
   "name": "toolshop-ui-e2e-playwright-demo",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
     "report": "npx playwright show-report",
-    "lint": "eslint --max-warnings 0 --color",
-    "lint:fix": "eslint --fix --max-warnings 0 --color"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "Oleksandr Kalyna",
@@ -14,26 +16,25 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@eslint/compat": "^1.2.6",
-    "@eslint/js": "^9.17.0",
     "@playwright/test": "1.50.1",
     "@types/faker": "^6.6.8",
     "@types/node": "^22.10.2",
-    "@typescript-eslint/parser": "^8.23.0",
-    "eslint": "^9.19.0",
+    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/parser": "^8.24.0",
+    "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-deprecation": "^3.0.0",
-    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-playwright": "^2.2.0",
     "eslint-plugin-prettier": "^5.2.3",
     "globals": "^15.14.0",
-    "typescript-eslint": "^8.18.2"
+    "prettier": "^3.5.0",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.23.0",
     "dotenv": "^16.4.7",
     "envalid": "^8.0.0",
-    "eslint-config-airbnb-typescript": "^18.0.0",
     "faker": "^5.5.3"
+  },
+  "overrides": {
+    "eslint": "^9.20.0"
   }
 }

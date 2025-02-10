@@ -1,4 +1,5 @@
-import { cleanEnv, str, url } from 'envalid'
+import { cleanEnv, str, url } from 'envalid';
+import process from 'node:process';
 
 export const env = cleanEnv(process.env, {
   BASE_URL: url(),
@@ -8,5 +9,5 @@ export const env = cleanEnv(process.env, {
   ADMIN_USERNAME: str(),
   CUSTOMER_EMAIL: str(),
   CUSTOMER_PASSWORD: str(),
-  CUSTOMER_USERNAME: str(),
-})
+  CUSTOMER_USERNAME: str()
+});

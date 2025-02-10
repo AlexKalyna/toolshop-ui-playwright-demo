@@ -4,10 +4,9 @@
 
 This project is a test automation suite using Playwright for a web application testing.
 
-
 ## Introduction
 
-This repository is a demo project showcasing UI testing using [Playwright](https://playwright.dev/). It includes a collection of automated tests designed to interact with  [Practice Software Testing - Toolshop](https://practicesoftwaretesting.com/) demo site.
+This repository is a demo project showcasing UI testing using [Playwright](https://playwright.dev/). It includes a collection of automated tests designed to interact with [Practice Software Testing - Toolshop](https://practicesoftwaretesting.com/) demo site.
 
 ## Getting Started
 
@@ -33,24 +32,24 @@ This repository is a demo project showcasing UI testing using [Playwright](https
 
 ### Default accounts
 
-| First name | Last name | Role   | E-mail                                | Password   |
-|------------|-----------|--------|---------------------------------------|------------|
-| John       | Doe       | admin  | admin@practicesoftwaretesting.com     | welcome01  |
-| Jane       | Doe       | user   | customer@practicesoftwaretesting.com  | welcome01  |
-| Jack       | Howe      | user   | customer2@practicesoftwaretesting.com | welcome01  |
-
+| First name | Last name | Role  | E-mail                                | Password  |
+| ---------- | --------- | ----- | ------------------------------------- | --------- |
+| John       | Doe       | admin | admin@practicesoftwaretesting.com     | welcome01 |
+| Jane       | Doe       | user  | customer@practicesoftwaretesting.com  | welcome01 |
+| Jack       | Howe      | user  | customer2@practicesoftwaretesting.com | welcome01 |
 
 5. Run all tests in production environment:
 
 ```shell
     npm run test
 ```
+
 For other environments see `scripts` in the package.json file
 
 6. Show report:
 
- ```shell
-    npm run report
+```shell
+   npm run report
 ```
 
 ## License

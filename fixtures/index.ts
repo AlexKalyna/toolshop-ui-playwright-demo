@@ -1,13 +1,13 @@
-import test from "@playwright/test";
-import { Application } from "../app";
-import { UserContext } from "../api/models";
+import test from '@playwright/test';
+import { Application } from '../app';
+import { UserContext } from '../api/models';
 import faker from 'faker';
-import { randomUUID } from "crypto";
+import { randomUUID } from 'crypto';
 
 export const shopTest = test.extend<{
-    app: Application;
-    newUser: UserContext;
-  }>({
+  app: Application;
+  newUser: UserContext;
+}>({
   app: async ({ page }, use) => {
     const app = new Application(page);
     await use(app);
@@ -24,7 +24,7 @@ export const shopTest = test.extend<{
       postcode: '19700',
       phone: faker.phone.phoneNumber(),
       password: 'StrongP@ssword2025',
-      email: `test+${randomUUID()}@test.com`,
+      email: `test+${randomUUID()}@test.com`
     };
 
     const createdUser = await app.api.auth.register(userModel);
@@ -32,5 +32,5 @@ export const shopTest = test.extend<{
     await app.home.open();
 
     await use({ userModel, createdUser });
-  },
+  }
 });
