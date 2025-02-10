@@ -11,14 +11,13 @@ export class Home extends AppPage {
 
   private targetProduct(name: string) {
     return this.page.getByText(name, { exact: true });
-    this.page.getByText(name, { exact: true });
   }
 
   @step()
-  async expectLoaded() {
+  async expectLoaded(message = 'Expected Home page to be opened') {
     await expect(this.page).toHaveURL(this.pagePath);
     await expect(this.searchInput).toBeVisible();
-    await expect(this.priceRangeTitle).toBeVisible();
+    await expect(this.priceRangeTitle, message).toBeVisible();
   }
 
   @step()

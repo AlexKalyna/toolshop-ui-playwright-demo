@@ -1,8 +1,7 @@
-// import dotenv from 'dotenv';
+import 'dotenv/config';
+import { env } from './env';
 import { defineConfig, devices } from '@playwright/test';
-import { env } from "./env";
-import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import process from 'node:process';
 
 export default defineConfig({
   testDir: './tests',
@@ -15,7 +14,7 @@ export default defineConfig({
   reporter: [['html'], ['list', { printSteps: true }]],
 
   use: {
-    baseURL: process.env.BASE_URL,
+    baseURL: env.BASE_URL,
     testIdAttribute: 'data-test',
     trace: 'on',
     actionTimeout: 0,

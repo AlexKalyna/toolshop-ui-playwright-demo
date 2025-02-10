@@ -9,23 +9,30 @@ import playwright from 'eslint-plugin-playwright';
 export default [
   eslint.configs.recommended,
   {
+    files: ['**/*.ts', '**/*.tsx'], // 👈 Specify file types to lint
     languageOptions: {
       parser: tsparser,
       ecmaVersion: 'latest',
-      sourceType: 'module'
+      sourceType: 'module',
+      globals: {
+        window: 'readonly', // Define 'window' as a global variable
+        document: 'readonly', // Define 'document' as a global variable
+        console: 'readonly', // Define 'console' as a global variable
+      }
     },
     plugins: {
       '@typescript-eslint': tseslint,
       prettier: prettierPlugin,
-      playwright
+      playwright,
     },
     rules: {
       ...tseslint.configs.recommended.rules,
       ...prettier.rules,
-      'prettier/prettier': 'error'
+      'prettier/prettier': 'error',
+      '@typescript-eslint/no-unused-vars': 'warn',
     }
   },
   {
-    ignores: ['node_modules']
+    ignores: ['node_modules', 'dist', 'build']
   }
 ];

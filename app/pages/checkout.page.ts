@@ -14,7 +14,7 @@ export class Checkout extends AppPage {
   private readonly confirmButton = this.page.getByRole('button', { name: 'Confirm' });
   private readonly orderSuccessText = this.page.locator('#order-confirmation');
 
-  async expectLoaded(message?: string) {
+  async expectLoaded() {
     await expect(this.page).toHaveURL(this.pagePath);
     await expect(this.stepsIndicator).toBeVisible();
     await expect(this.addedItem).toBeVisible();
