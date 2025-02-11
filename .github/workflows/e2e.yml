@@ -1,4 +1,4 @@
-name: api tests
+name: e2e tests
 on:
   push:
     branches: [ main ]
@@ -14,7 +14,7 @@ jobs:
     - name: running eslint
       run: npm run lint
 
-  full-api:
+  e2e-ui:
     needs: eslint-check
     env:
       HOME: /root
@@ -24,6 +24,7 @@ jobs:
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       ADMIN_USERNAME: ${{ vars.ADMIN_USERNAME }}
       CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
+      CUSTOMER_PASSWORD: ${{ vars.CUSTOMER_PASSWORD }}
       CUSTOMER_USERNAME: ${{ vars.CUSTOMER_USERNAME }}
 
     timeout-minutes: 60
