@@ -1,0 +1,43 @@
+name: api tests
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  eslint-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: install npm deps
+      run: npm ci --legacy-peer-deps
+    - name: running eslint
+      run: npm run lint
+
+  full-api:
+    needs: eslint-check
+    env:
+      HOME: /root
+      BASE_URL: ${{secrets.BASE_URL}}
+      API_URL: ${{ secrets.API_URL }}
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      ADMIN_USERNAME: ${{ vars.ADMIN_USERNAME }}
+      CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
+      CUSTOMER_USERNAME: ${{ vars.CUSTOMER_USERNAME }}
+
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.1-jammy
+    steps:
+    - uses: actions/checkout@v4
+    - name: install npm deps
+      run: npm ci --legacy-peer-deps
+    - name: running api tests
+      run: npm test
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        path: playwright-report/
+        retention-days: 7
