@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { AppPage } from '../abstractClasses';
+import { PaymentMethods as payBy } from '../../utils/paymentMethods';
 
 export class Checkout extends AppPage {
   public pagePath = 'checkout';
@@ -12,7 +13,9 @@ export class Checkout extends AppPage {
   private readonly proceedToAddressButton = this.page.locator('[data-test="proceed-2"]');
   private readonly proceedToPaymentButton = this.page.locator('[data-test="proceed-3"]');
   private readonly confirmButton = this.page.getByRole('button', { name: 'Confirm' });
-  private readonly orderSuccessText = this.page.locator('#order-confirmation');
+  private readonly orderSuccessInfo = this.page.locator('#order-confirmation');
+  private readonly orderSuccessConfirmation = this.page.locator('.alert-success > div');
+  private readonly paymentMethodDropdown = this.page.locator('[data-test="payment-method"]');
 
   async expectLoaded() {
     await expect(this.page).toHaveURL(this.pagePath);
@@ -44,17 +47,16 @@ export class Checkout extends AppPage {
     await this.removeItemIcon.click();
   }
 
-  async setPaymentMethod(paymentMethod: string = 'Cash on Delivery') {
-    await this.page.locator('payment-method').selectOption(paymentMethod);
-    await expect(this.page.locator('payment-method')).toHaveText(paymentMethod);
+  async setPaymentMethod(paymentMethod: string = payBy.cash) {
+    await this.paymentMethodDropdown.selectOption(paymentMethod);
   }
 
   async expectSuccessPaymentMessage() {
-    await expect(this.page.locator('.alert-success > div')).toHaveText('Payment was successful');
+    await expect(this.orderSuccessConfirmation).toHaveText('Payment was successful');
   }
 
   async expectOrderPlaced(): Promise<string> {
-    const order = await this.orderSuccessText.innerText();
+    const order = await this.orderSuccessInfo.innerText();
     await expect(order).toContain('Thanks for your order!');
     return order.split('is ')[1];
   }

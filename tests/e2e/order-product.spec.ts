@@ -18,15 +18,15 @@ shopTest.describe('Order products', () => {
       await header.clickCart();
       await checkout.expectLoaded();
       await checkout.proceedToSignInStep();
-      await checkout.proceedToSignInStep();
       await checkout.proceedToAddressStep();
       await checkout.proceedToPaymentStep();
       await checkout.setPaymentMethod();
       await checkout.clickConfirmButton();
       await checkout.expectSuccessPaymentMessage();
       await checkout.clickConfirmButton();
+      await checkout.expectSuccessPaymentMessage();
       //TBD: Update test lines below
-      const invoiceId = await checkout.expectSuccessPaymentMessage();
+      const invoiceId = await checkout.expectOrderPlaced();
       console.log('Your invoice ID is: ', invoiceId);
     }
   );
