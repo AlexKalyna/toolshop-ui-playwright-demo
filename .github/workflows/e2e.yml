@@ -24,7 +24,7 @@ jobs:
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       ADMIN_USERNAME: ${{ vars.ADMIN_USERNAME }}
       CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
-      CUSTOMER_PASSWORD: ${{ vars.CUSTOMER_PASSWORD }}
+      CUSTOMER_PASSWORD: ${{ secrets.CUSTOMER_PASSWORD }}
       CUSTOMER_USERNAME: ${{ vars.CUSTOMER_USERNAME }}
 
     timeout-minutes: 60
