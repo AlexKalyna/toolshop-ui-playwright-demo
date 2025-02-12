@@ -9,6 +9,7 @@ shopTest.describe('Order products', () => {
     {
       tag: ['@smoke']
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async ({ app: { home, product, header, checkout }, newUser }) => {
       await home.searchProduct('Tape');
       await home.selectProduct('Tape Measure 5m');

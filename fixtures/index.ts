@@ -1,8 +1,7 @@
 import test from '@playwright/test';
 import { Application } from '../app';
 import { UserContext } from '../api/models';
-import faker from 'faker';
-import { randomUUID } from 'crypto';
+import { faker } from '@faker-js/faker';
 
 export const shopTest = test.extend<{
   app: Application;
@@ -15,16 +14,16 @@ export const shopTest = test.extend<{
 
   newUser: async ({ app }, use) => {
     const userModel = {
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      address: faker.address.streetAddress(),
-      city: faker.address.city(),
-      state: faker.address.state(),
-      country: faker.address.country(),
-      postcode: '19700',
-      phone: faker.phone.phoneNumber(),
-      password: 'StrongP@ssword2025',
-      email: `test+${randomUUID()}@test.com`
+      first_name: faker.person.firstName(),
+      last_name: faker.person.lastName(),
+      address: faker.location.streetAddress(),
+      city: faker.location.city(),
+      state: faker.location.state(),
+      country: faker.location.country(),
+      postcode: faker.location.zipCode(),
+      phone: faker.phone.number(),
+      password: faker.internet.password({ prefix: 'A1!a' }),
+      email: `test+${faker.string.uuid()}@test.com`
     };
 
     const createdUser = await app.api.auth.register(userModel);
