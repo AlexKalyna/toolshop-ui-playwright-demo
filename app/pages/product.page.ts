@@ -7,6 +7,7 @@ export class Product extends AppPage {
 
   private readonly productDescription = this.page.getByTestId('product-description');
   private readonly addToCartButton = this.page.getByRole('button', { name: 'Add to Cart' });
+  private readonly addToFavoritesButton = this.page.getByRole('button', { name: ' Add to favourites' });
   private readonly quantityInput = this.page.getByTestId('quantity');
   private readonly successToast = this.page.locator('#toast-container.toast-top-right.toast-container');
   private readonly shoppingCartIcon = this.page.getByTestId('nav-cart');
@@ -19,6 +20,17 @@ export class Product extends AppPage {
   @step()
   async addToCart() {
     await this.addToCartButton.click();
+  }
+
+  @step()
+  async addToFavorites() {
+    await this.addToFavoritesButton.click();
+  }
+
+  @step()
+  async expectProductIsAddedToFavorites() {
+    await expect(this.successToast).toHaveText('Product added to your favorites list.');
+    await this.successToast.click();
   }
 
   @step()

@@ -10,7 +10,6 @@ export class Header extends Component {
   private readonly contactButton = this.page.getByRole('menubar').getByText('Contact');
   private readonly homeButton = this.page.getByRole('menubar').getByText('Home');
   private readonly signInButton = this.page.locator('.nav-link');
-  private readonly errorBlock = this.page.locator('.help-block');
 
   @step()
   async expectLoaded() {
@@ -60,10 +59,5 @@ export class Header extends Component {
   @step()
   async expectToBeLoggedIn(username: string = 'Jane Doe') {
     await expect(await this.page.getByRole('button', { name: username })).toBeVisible();
-  }
-
-  @step()
-  async expectInvalidCredentialsError() {
-    await expect(await this.errorBlock).toHaveText('Invalid email or password');
   }
 }
