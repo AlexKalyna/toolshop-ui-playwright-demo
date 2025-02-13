@@ -2,7 +2,7 @@ import { shopTest } from '../../fixtures';
 import type { AddressData } from '../../models/user';
 
 const addressData: AddressData = {
-  address: '123 Main St',
+  street: '123 Main St',
   postcode: '12345',
   city: 'New York',
   state: 'NY',
@@ -16,9 +16,7 @@ shopTest(
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async ({ app: { profile }, newUser }) => {
-    // console.dir(newUser);
     await profile.open();
-    await profile.expectLoaded();
     await profile.updateAddressInfo(addressData);
     await profile.expectSuccessUdateMessage();
   }

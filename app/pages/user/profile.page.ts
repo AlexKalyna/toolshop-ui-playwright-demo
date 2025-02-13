@@ -10,8 +10,8 @@ export class Profile extends AppPage {
   private readonly lastNameInput = this.page.getByRole('textbox', { name: 'Last Name' });
   private readonly emailInput = this.page.getByRole('textbox', { name: 'Email address' });
   private readonly phoneInput = this.page.getByRole('textbox', { name: 'Phone' });
-  private readonly addressInput = this.page.getByRole('textbox', { name: 'Address', exact: true });
-  private readonly postcodeInput = this.page.getByRole('textbox', { name: 'Postcode' });
+  private readonly streetInput = this.page.getByRole('textbox', { name: 'Street', exact: true });
+  private readonly postcodeInput = this.page.getByRole('textbox', { name: 'Postal code' });
   private readonly cityInput = this.page.getByRole('textbox', { name: 'City' });
   private readonly stateInput = this.page.getByRole('textbox', { name: 'State' });
   private readonly countryInput = this.page.getByRole('textbox', { name: 'Country' });
@@ -25,8 +25,8 @@ export class Profile extends AppPage {
   }
 
   @step()
-  async fillAddress(address: string) {
-    await this.addressInput.fill(address);
+  async fillStreet(address: string) {
+    await this.streetInput.fill(address);
   }
 
   @step()
@@ -56,7 +56,7 @@ export class Profile extends AppPage {
 
   @step()
   async updateAddressInfo(addressData: AddressData) {
-    await this.fillAddress(addressData.address);
+    await this.fillStreet(addressData.street);
     await this.fillPostcode(addressData.postcode);
     await this.fillCity(addressData.city);
     await this.fillState(addressData.state);

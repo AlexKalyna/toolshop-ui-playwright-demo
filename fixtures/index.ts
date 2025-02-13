@@ -16,11 +16,13 @@ export const shopTest = test.extend<{
     const userModel = {
       first_name: faker.person.firstName(),
       last_name: faker.person.lastName(),
-      address: faker.location.streetAddress(),
-      city: faker.location.city(),
-      state: faker.location.state(),
-      country: faker.location.country(),
-      postcode: faker.location.zipCode(),
+      address: {
+        street: faker.location.streetAddress(),
+        city: faker.location.city(),
+        state: faker.location.state(),
+        country: faker.location.country(),
+        postal_code: faker.location.zipCode()
+      },
       phone: faker.phone.number(),
       password: faker.internet.password({ prefix: 'A1!a' }),
       email: `test+${faker.string.uuid()}@test.com`
