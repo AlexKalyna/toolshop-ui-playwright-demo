@@ -1,6 +1,6 @@
 import test from '@playwright/test';
 import { Application } from '../app';
-import { UserContext } from '../api/models';
+import { UserContext } from '../models/api-models/models';
 import { faker } from '@faker-js/faker';
 
 export const shopTest = test.extend<{

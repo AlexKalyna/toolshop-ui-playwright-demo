@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { step } from '../../misc/reporters/step';
 import { AppPage } from '../abstractClasses';
+import { ContactData } from '../../models/user';
 
 export class Contact extends AppPage {
   public pagePath = '/contact';
@@ -75,11 +76,3 @@ export class Contact extends AppPage {
     await this.typeMessageText(contactData.message);
   }
 }
-
-export type ContactData = {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  subject: string;
-  message: string;
-};

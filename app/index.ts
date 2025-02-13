@@ -9,6 +9,7 @@ import { Header } from './components/header.component';
 import { Checkout } from './pages/checkout.page';
 import { API } from '../api';
 import { Favorites } from './pages/user/favorites.page';
+import { Profile } from './pages/user/profile.page';
 
 export class Application extends PageHolder {
   public login = new Login(this.page);
@@ -21,6 +22,7 @@ export class Application extends PageHolder {
   public checkout = new Checkout(this.page);
   public api = new API(this.page.request);
   public favorites = new Favorites(this.page);
+  public profile = new Profile(this.page);
 
   async headlessLogin(data: { email: string; password: string }) {
     try {
