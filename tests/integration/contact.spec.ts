@@ -31,7 +31,7 @@ shopTest(
   }
 );
 
-shopTest.only(
+shopTest(
   'Logged out customer can send contact request',
   {
     tag: ['@smoke', '@e2e', '@C261418']
