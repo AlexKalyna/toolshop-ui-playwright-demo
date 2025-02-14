@@ -52,7 +52,7 @@ export const shopTest = test.extend<{
 
   itemAddedToFavorites: async ({ app }, use) => {
     //TBD: update fixture to use varios product slugs from the list of products
-    const productSlug = '001JM1TZTSF4VFHCN3D5JHMVEG1';
+    const productSlug = '01JM1TZTSF4VFHCN3D5JHMVEG1';
     await app.product.open(`product/${productSlug}`);
     await app.product.addToFavorites();
 

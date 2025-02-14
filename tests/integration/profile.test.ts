@@ -17,7 +17,13 @@ shopTest(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async ({ app: { profile }, newUser }) => {
     await profile.open();
-    await profile.updateAddressInfo(addressData);
+    await profile.fillStreet(addressData.street);
+    await profile.fillPostcode(addressData.postcode);
+    await profile.fillCity(addressData.city);
+    await profile.fillState(addressData.state);
+    await profile.fillCountry(addressData.country);
+    await profile.clickUpdateProfileButton();
+    // await profile.updateAddressInfo(addressData);
     await profile.expectSuccessUdateMessage();
   }
 );
