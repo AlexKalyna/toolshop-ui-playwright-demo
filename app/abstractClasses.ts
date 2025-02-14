@@ -31,6 +31,7 @@ export abstract class AppPage extends Component {
   @step()
   async open(path?: string) {
     await this.page.goto(path ?? this.pagePath);
+    await this.page.waitForLoadState('networkidle');
     await this.expectLoaded();
   }
 }

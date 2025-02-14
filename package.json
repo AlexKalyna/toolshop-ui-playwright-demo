@@ -8,7 +8,10 @@
     "report": "npx playwright show-report",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:screenshot": "npx playwright test --project=screenshot-tests",
+    "update:snapshots": "npx playwright test --project=screenshot-tests --update-snapshots"
+
   },
   "keywords": [],
   "author": "Oleksandr Kalyna",

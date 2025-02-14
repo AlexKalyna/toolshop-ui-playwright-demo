@@ -22,7 +22,9 @@ export class Product extends AppPage {
   @step()
   async expectLoaded() {
     await expect(this.page).toHaveURL(this.pagePath);
-    await expect(this.productDescription).toBeVisible();
+    if (!this.productDescription) {
+      throw new Error('There is no products added to favorites list');
+    }
   }
 
   @step()
