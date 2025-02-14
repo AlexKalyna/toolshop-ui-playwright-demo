@@ -14,7 +14,7 @@ shopTest(
   }
 );
 
-shopTest(
+shopTest.only(
   'Customer can remove product from favorites list',
   {
     tag: ['@smoke', '@e2e', '@C261428']

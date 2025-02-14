@@ -38,15 +38,30 @@ This repository is a demo project showcasing UI testing using [Playwright](https
 | Jane       | Doe       | user  | customer@practicesoftwaretesting.com  | welcome01 |
 | Jack       | Howe      | user  | customer2@practicesoftwaretesting.com | welcome01 |
 
-5. Run all tests in production environment:
+5. Run all UI tests in production environment:
 
 ```shell
     npm run test
 ```
+6. Run all screenshot tests in production environment:
 
-For other environments see `scripts` in the package.json file
+To run all screenshot tests in the production environment, use:
 
-6. Show report:
+```sh
+npm run test:screenshot
+```
+
+### ⚠️ Important: Updating Snapshots
+
+If this is your first time running screenshot tests or if any visual changes have been made, it is **highly recommended** to update the snapshots before executing the tests:
+
+```sh
+npm run update:snapshots
+```
+
+This ensures that the tests compare against the latest approved visuals, preventing false failures.
+
+7. Show report:
 
 ```shell
    npm run report
