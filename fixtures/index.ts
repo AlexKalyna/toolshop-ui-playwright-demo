@@ -59,6 +59,8 @@ export const shopTest = test.extend<{
     const productSlug = productsResponse.data[2].id;
     await page.goto(`product/${productSlug}`);
     await app.product.addToFavorites();
+    // await page.waitForTimeout(2000);
+    await app.product.expectProductIsAddedToFavorites();
 
     await use({ productSlug });
   }

@@ -16,7 +16,7 @@ export class Product extends AppPage {
 
   private readonly productDescription = this.page.getByTestId('product-description');
   private readonly addToCartButton = this.page.getByRole('button', { name: 'Add to Cart' });
-  private readonly addToFavoritesButton = this.page.getByRole('button', { name: ' Add to favourites' });
+  private readonly addToFavoritesButton = this.page.getByRole('button', { name: 'Add to favourites' });
   private readonly quantityInput = this.page.getByTestId('quantity');
   private readonly shoppingCartIcon = this.page.getByTestId('nav-cart');
 
