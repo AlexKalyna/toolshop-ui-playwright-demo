@@ -2,12 +2,12 @@ import { expect } from '@playwright/test';
 import { shopTest } from '../../fixtures';
 
 shopTest(
-  'Home page',
+  'Login page',
   {
-    tag: ['@C261567']
+    tag: ['@C261569']
   },
   async ({ app, page }) => {
-    await app.home.open();
-    await expect(page).toHaveScreenshot('home-page-no-auth.png');
+    app.login.open();
+    await expect(page).toHaveScreenshot('login-page.png');
   }
 );

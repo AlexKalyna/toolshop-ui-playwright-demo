@@ -38,15 +38,19 @@ This repository is a demo project showcasing UI testing using [Playwright](https
 | Jane       | Doe       | user  | customer@practicesoftwaretesting.com  | welcome01 |
 | Jack       | Howe      | user  | customer2@practicesoftwaretesting.com | welcome01 |
 
-5. Run all tests in production environment:
+5. Run all UI tests in production environment:
 
 ```shell
     npm run test
 ```
+6. Run all screenshot tests in production environment:
 
-For other environments see `scripts` in the package.json file
+```shell
+    npm run test:screenshot
+```
 
-6. Show report:
+
+7. Show report:
 
 ```shell
    npm run report
