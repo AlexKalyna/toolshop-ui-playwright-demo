@@ -11,9 +11,9 @@ shopTest.describe('Order products', () => {
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async ({ app: { home, product, header, checkout }, newUser }) => {
-      await home.searchProduct('Tape');
-      await home.selectProduct('Tape Measure 5m');
-      await product.setQuantity(3);
+      await home.searchProduct('Safety Goggles');
+      await home.selectProduct('Safety Goggles');
+      await product.setQuantity(2);
       await product.addToCart();
       await product.expectProductIsAddedToCart();
       await header.clickCart();

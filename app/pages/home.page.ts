@@ -10,7 +10,7 @@ export class Home extends AppPage {
   private readonly searchButton = this.page.getByRole('button', { name: 'Search' });
 
   private targetProduct(name: string) {
-    return this.page.getByText(name, { exact: true });
+    return this.page.getByAltText(name);
   }
 
   @step()
