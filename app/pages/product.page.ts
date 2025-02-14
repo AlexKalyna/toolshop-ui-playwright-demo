@@ -1,15 +1,23 @@
-import { expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { step } from '../../misc/reporters/step';
 import { AppPage } from '../abstractClasses';
+import { Application } from '..';
 
 export class Product extends AppPage {
-  public pagePath = 'product/01JKEGXA2QN0WQFDVCFYBEVPS7';
+  app: Application;
+
+  constructor(page: Page, app: Application) {
+    super(page);
+    this.page = page;
+    this.app = app;
+  }
+
+  public pagePath = 'product/01JM0KKEEEPT15EZVQF6EC3QQ6';
 
   private readonly productDescription = this.page.getByTestId('product-description');
   private readonly addToCartButton = this.page.getByRole('button', { name: 'Add to Cart' });
   private readonly addToFavoritesButton = this.page.getByRole('button', { name: ' Add to favourites' });
   private readonly quantityInput = this.page.getByTestId('quantity');
-  private readonly successToast = this.page.locator('#toast-container.toast-top-right.toast-container');
   private readonly shoppingCartIcon = this.page.getByTestId('nav-cart');
   @step()
   async expectLoaded() {
@@ -29,14 +37,14 @@ export class Product extends AppPage {
 
   @step()
   async expectProductIsAddedToFavorites() {
-    await expect(this.successToast).toHaveText('Product added to your favorites list.');
-    await this.successToast.click();
+    const message = 'Product added to your favorites list.';
+    await this.app.base.expectMessageToastToBe(message);
   }
 
   @step()
   async expectProductIsAddedToCart() {
-    await expect(this.successToast).toHaveText('Product added to shopping cart.');
-    await this.successToast.click();
+    const message = 'Product added to shopping cart.';
+    await this.app.base.expectMessageToastToBe(message);
     await expect(this.shoppingCartIcon).toBeVisible();
   }
 

@@ -1,3 +1,4 @@
+import { Checkout } from './../../app/pages/checkout.page';
 import { skipIfWebkit } from '../../utils/testSkipper';
 import { shopTest } from '../../fixtures';
 
@@ -7,7 +8,7 @@ shopTest.describe('Order products', () => {
   shopTest(
     'Registered customer can order products',
     {
-      tag: ['@smoke']
+      tag: ['@smoke', '@e2e', '@C289876']
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async ({ app: { home, product, header, checkout }, newUser }) => {
@@ -25,10 +26,22 @@ shopTest.describe('Order products', () => {
       await checkout.clickConfirmButton();
       await checkout.expectSuccessPaymentMessage();
       await checkout.clickConfirmButton();
-      await checkout.expectSuccessPaymentMessage();
       //TBD: Update test lines below
       const invoiceId = await checkout.expectOrderPlaced();
       console.log('Your invoice ID is: ', invoiceId);
+    }
+  );
+
+  shopTest(
+    'Customer can change product quantity during checkout',
+    {
+      tag: ['@C289877']
+    },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async ({ app: { checkout, header, base }, newUser, itemAddedToCart }) => {
+      await header.clickCart();
+      await checkout.setProductQuantity(4);
+      await base.expectMessageToastToBe('Product quantity updated.');
     }
   );
 });

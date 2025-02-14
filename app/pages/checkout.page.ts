@@ -25,6 +25,7 @@ export class Checkout extends AppPage {
 
   async setProductQuantity(quantity: number) {
     await this.quantityInput.fill(quantity.toString());
+    await this.page.locator('body').click();
   }
 
   async proceedToSignInStep() {

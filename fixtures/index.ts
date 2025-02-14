@@ -6,6 +6,9 @@ import { faker } from '@faker-js/faker';
 export const shopTest = test.extend<{
   app: Application;
   newUser: UserContext;
+  itemAddedToCart: {
+    productSlug: string;
+  };
 }>({
   app: async ({ page }, use) => {
     const app = new Application(page);
@@ -33,5 +36,14 @@ export const shopTest = test.extend<{
     await app.home.open();
 
     await use({ userModel, createdUser });
+  },
+
+  itemAddedToCart: async ({ app }, use) => {
+    //TBD: update fixture to use varios product slugs from the list of products
+    const productSlug = '01JM0KKEEEPT15EZVQF6EC3QQ6';
+    await app.product.open(`product/${productSlug}`);
+    await app.product.addToCart();
+
+    await use({ productSlug });
   }
 });
