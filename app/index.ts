@@ -9,18 +9,22 @@ import { Header } from './components/header.component';
 import { Checkout } from './pages/checkout.page';
 import { API } from '../api';
 import { Favorites } from './pages/user/favorites.page';
+import { Profile } from './pages/user/profile.page';
+import { Base } from './components/base.components';
 
 export class Application extends PageHolder {
   public login = new Login(this.page);
   public home = new Home(this.page);
   public category = new Category(this.page);
-  public product = new Product(this.page);
+  public product = new Product(this.page, this);
   public contact = new Contact(this.page);
   public rentals = new Rentals(this.page);
   public header = new Header(this.page);
   public checkout = new Checkout(this.page);
   public api = new API(this.page.request);
   public favorites = new Favorites(this.page);
+  public profile = new Profile(this.page);
+  public base = new Base(this.page);
 
   async headlessLogin(data: { email: string; password: string }) {
     try {

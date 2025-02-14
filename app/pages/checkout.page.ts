@@ -14,7 +14,7 @@ export class Checkout extends AppPage {
   private readonly proceedToPaymentButton = this.page.locator('[data-test="proceed-3"]');
   private readonly confirmButton = this.page.getByRole('button', { name: 'Confirm' });
   private readonly orderSuccessInfo = this.page.locator('#order-confirmation');
-  private readonly orderSuccessConfirmation = this.page.locator('.alert-success > div');
+  private readonly orderSuccessConfirmation = this.page.locator('div.alert.alert-success');
   private readonly paymentMethodDropdown = this.page.locator('[data-test="payment-method"]');
 
   async expectLoaded() {
@@ -25,6 +25,7 @@ export class Checkout extends AppPage {
 
   async setProductQuantity(quantity: number) {
     await this.quantityInput.fill(quantity.toString());
+    await this.page.locator('body').click();
   }
 
   async proceedToSignInStep() {

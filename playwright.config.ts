@@ -7,21 +7,25 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   workers: '90%',
+
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  reporter: [['html'], ['list', { printSteps: true }]],
+  reporter: [
+    ['html', { open: 'never' }],
+    ['list', { printSteps: true }]
+  ],
 
   use: {
     baseURL: env.BASE_URL,
     testIdAttribute: 'data-test',
-    trace: 'on',
+    trace: 'on-first-retry',
     actionTimeout: 0,
     ignoreHTTPSErrors: true,
     video: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    headless: true
+    headless: process.env.CI ? true : false
   },
 
   projects: [

@@ -7,11 +7,13 @@ export interface LoginResponse {
 export interface UserCreateRequest {
   first_name: string;
   last_name: string;
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-  postcode: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postal_code: string;
+  };
   phone: string;
   password: string;
   email: string;
@@ -20,11 +22,11 @@ export interface UserCreateRequest {
 export interface UserCreatedResponse {
   first_name: string;
   last_name: string;
-  address: string;
+  street: string;
   city: string;
   state: string;
   country: string;
-  postcode: string;
+  postal_code: string;
   phone: string;
   dob: string; // Consider using Date type if you plan to work with date objects
   email: string;

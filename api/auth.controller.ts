@@ -1,5 +1,5 @@
 import { RequestHolder } from './requestHolder';
-import type { LoginResponse, UserCreateRequest, UserCreatedResponse } from './models';
+import type { LoginResponse, UserCreateRequest, UserCreatedResponse } from '../models/api-models/models';
 import { env } from '../env';
 import { step } from '../misc/reporters/step';
 

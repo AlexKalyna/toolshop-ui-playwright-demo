@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { shopTest } from '../../fixtures';
-import { ContactData } from '../../app/pages/contact.page';
+import { ContactData } from '../../models/user';
 
 const guestContactData: ContactData = {
   firstName: faker.person.firstName(),
