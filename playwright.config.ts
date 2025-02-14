@@ -48,7 +48,7 @@ export default defineConfig({
     {
       name: 'screenshot-tests',
       testMatch: /.*\.screenshot\.ts/,
-      testDir: '/tests/screenshot',
+      testDir: './tests/screenshot',
       use: { ...devices['Desktop Chrome'], permissions: ['clipboard-read'] }
     }
 

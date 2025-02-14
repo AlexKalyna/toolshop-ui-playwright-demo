@@ -7,7 +7,9 @@ shopTest(
     tag: ['@C261569']
   },
   async ({ app, page }) => {
-    app.login.open();
-    await expect(page).toHaveScreenshot('login-page.png');
+    await app.login.open();
+    await expect(page).toHaveScreenshot('login-page.png', {
+      mask: [page.getByRole('link', { name: 'Practice Software Testing - Toolshop' })]
+    });
   }
 );
