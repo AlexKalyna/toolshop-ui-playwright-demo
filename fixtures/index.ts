@@ -2,6 +2,7 @@ import test from '@playwright/test';
 import { Application } from '../app';
 import { UserContext } from '../models/api-models/models';
 import { faker } from '@faker-js/faker';
+import { env } from '../env';
 
 export const shopTest = test.extend<{
   app: Application;
@@ -40,20 +41,23 @@ export const shopTest = test.extend<{
 
     await use({ userModel, createdUser });
   },
-  //TBD: in order to make testing preconditions execution time faster the following fixtures should use api requsts for adding product to cart/favorites
-  itemAddedToCart: async ({ app }, use) => {
-    //TBD: update fixture to use varios product slugs from the list of products
-    const productSlug = '01JM1TZTSF4VFHCN3D5JHMVEG1';
-    await app.product.open(`product/${productSlug}`);
+
+  itemAddedToCart: async ({ app, page }, use) => {
+    //TBD: refactor fixture
+    const productsResponse = await (await page.request.get(`${env.API_URL}products?between=price,1,100&page=1`)).json();
+    const productSlug = productsResponse.data[0].id;
+    console.log('Product slug: ', productSlug);
+    await page.goto(`product/${productSlug}`);
     await app.product.addToCart();
 
     await use({ productSlug });
   },
 
-  itemAddedToFavorites: async ({ app }, use) => {
-    //TBD: update fixture to use varios product slugs from the list of products
-    const productSlug = '01JM1TZTSF4VFHCN3D5JHMVEG1';
-    await app.product.open(`product/${productSlug}`);
+  itemAddedToFavorites: async ({ app, page }, use) => {
+    //TBD: refactor fixture
+    const productsResponse = await (await page.request.get(`${env.API_URL}products?between=price,1,100&page=1`)).json();
+    const productSlug = productsResponse.data[2].id;
+    await page.goto(`product/${productSlug}`);
     await app.product.addToFavorites();
 
     await use({ productSlug });

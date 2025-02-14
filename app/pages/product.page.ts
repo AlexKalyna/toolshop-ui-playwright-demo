@@ -12,13 +12,14 @@ export class Product extends AppPage {
     this.app = app;
   }
 
-  public pagePath = 'product/01JM1TZTSF4VFHCN3D5JHMVEG1';
+  public pagePath = 'product/**';
 
   private readonly productDescription = this.page.getByTestId('product-description');
   private readonly addToCartButton = this.page.getByRole('button', { name: 'Add to Cart' });
   private readonly addToFavoritesButton = this.page.getByRole('button', { name: ' Add to favourites' });
   private readonly quantityInput = this.page.getByTestId('quantity');
   private readonly shoppingCartIcon = this.page.getByTestId('nav-cart');
+
   @step()
   async expectLoaded() {
     await expect(this.page).toHaveURL(this.pagePath);
