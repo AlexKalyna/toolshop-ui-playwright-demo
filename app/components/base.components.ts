@@ -7,7 +7,7 @@ export class Base extends Component {
     return Promise.resolve();
   }
 
-  async expectMessageToastToBe(message: string): Promise<void> {
+  async expectToastMessageToBe(message: string): Promise<void> {
     await expect(this.messageToast).toHaveText(message);
     await this.messageToast.click();
   }

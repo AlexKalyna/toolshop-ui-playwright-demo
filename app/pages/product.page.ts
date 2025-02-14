@@ -38,13 +38,13 @@ export class Product extends AppPage {
   @step()
   async expectProductIsAddedToFavorites() {
     const message = 'Product added to your favorites list.';
-    await this.app.base.expectMessageToastToBe(message);
+    await this.app.base.expectToastMessageToBe(message);
   }
 
   @step()
   async expectProductIsAddedToCart() {
     const message = 'Product added to shopping cart.';
-    await this.app.base.expectMessageToastToBe(message);
+    await this.app.base.expectToastMessageToBe(message);
     await expect(this.shoppingCartIcon).toBeVisible();
   }
 

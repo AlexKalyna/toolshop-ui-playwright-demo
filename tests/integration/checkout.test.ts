@@ -1,4 +1,3 @@
-import { Checkout } from './../../app/pages/checkout.page';
 import { skipIfWebkit } from '../../utils/testSkipper';
 import { shopTest } from '../../fixtures';
 
@@ -6,7 +5,7 @@ shopTest.describe('Order products', () => {
   skipIfWebkit();
 
   shopTest(
-    'Registered customer can order products',
+    'Registered customer can order product',
     {
       tag: ['@smoke', '@e2e', '@C289876']
     },
@@ -41,7 +40,7 @@ shopTest.describe('Order products', () => {
     async ({ app: { checkout, header, base }, newUser, itemAddedToCart }) => {
       await header.clickCart();
       await checkout.setProductQuantity(4);
-      await base.expectMessageToastToBe('Product quantity updated.');
+      await base.expectToastMessageToBe('Product quantity updated.');
     }
   );
 });

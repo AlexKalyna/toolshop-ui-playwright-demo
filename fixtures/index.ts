@@ -9,6 +9,9 @@ export const shopTest = test.extend<{
   itemAddedToCart: {
     productSlug: string;
   };
+  itemAddedToFavorites: {
+    productSlug: string;
+  };
 }>({
   app: async ({ page }, use) => {
     const app = new Application(page);
@@ -37,12 +40,21 @@ export const shopTest = test.extend<{
 
     await use({ userModel, createdUser });
   },
-
+  //TBD: in order to make testing preconditions execution time faster the following fixtures should use api requsts for adding product to cart/favorites
   itemAddedToCart: async ({ app }, use) => {
     //TBD: update fixture to use varios product slugs from the list of products
     const productSlug = '01JM0KKEEEPT15EZVQF6EC3QQ6';
     await app.product.open(`product/${productSlug}`);
     await app.product.addToCart();
+
+    await use({ productSlug });
+  },
+
+  itemAddedToFavorites: async ({ app }, use) => {
+    //TBD: update fixture to use varios product slugs from the list of products
+    const productSlug = '01JM0KKEEEPT15EZVQF6EC3QQ6';
+    await app.product.open(`product/${productSlug}`);
+    await app.product.addToFavorites();
 
     await use({ productSlug });
   }
