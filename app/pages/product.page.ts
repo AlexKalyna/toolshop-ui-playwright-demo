@@ -12,7 +12,7 @@ export class Product extends AppPage {
     this.app = app;
   }
 
-  public pagePath = 'product/01JM0KKEEEPT15EZVQF6EC3QQ6';
+  public pagePath = 'product/01JM1TZTSF4VFHCN3D5JHMVEG1';
 
   private readonly productDescription = this.page.getByTestId('product-description');
   private readonly addToCartButton = this.page.getByRole('button', { name: 'Add to Cart' });
