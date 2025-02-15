@@ -27,18 +27,24 @@ jobs:
       CUSTOMER_PASSWORD: ${{ secrets.CUSTOMER_PASSWORD }}
       CUSTOMER_USERNAME: ${{ vars.CUSTOMER_USERNAME }}
 
-    timeout-minutes: 60
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.50.1-jammy
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1,2,3]
+        shardTotal: [3]
     steps:
     - uses: actions/checkout@v4
     - name: install npm deps
       run: npm ci --legacy-peer-deps
-    - name: running ui tests
-      run: npx playwright test --project=chromium --project=webkit
+    - name: running tests
+      run: npx playwright test --project=chromium --project=webkit -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
     - uses: actions/upload-artifact@v4
       if: always()
       with:
+        name: playwright-report-${{ matrix.shardIndex }}
         path: playwright-report/
         retention-days: 7
