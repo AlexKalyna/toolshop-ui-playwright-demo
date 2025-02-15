@@ -41,10 +41,9 @@ jobs:
     - name: install npm deps
       run: npm ci --legacy-peer-deps
     - name: running tests
-      run: npx playwright test --project=chromium --project=webkit -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      run: npx playwright test --project=chromium --project=webkit
     - uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: playwright-report-${{ matrix.shardIndex }}
         path: playwright-report/
         retention-days: 7
