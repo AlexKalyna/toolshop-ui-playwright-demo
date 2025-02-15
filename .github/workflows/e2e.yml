@@ -41,7 +41,7 @@ jobs:
     - name: install npm deps
       run: npm ci --legacy-peer-deps
     - name: Update Playwright snapshots
-      run: npx playwright test --update-snapshots
+      run: npx playwright test --update-snapshots --project=screenshot-tests
     - name: running tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
