@@ -1,4 +1,4 @@
-name: e2e ui tests
+name: Playwright Tests
 on:
   push:
     branches: [ main ]
@@ -9,12 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: install npm deps
+
+    - name: Install dependencies
       run: npm ci --legacy-peer-deps
-    - name: running eslint
+
+    - name: Run eslint
       run: npm run lint
 
-  e2e-ui:
+  playwright-tests:
     needs: eslint-check
     env:
       HOME: /root
@@ -33,19 +35,56 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.50.1-jammy
     strategy:
       fail-fast: false
-      # matrix:
-      #   shardIndex: [1,2,3]
-      #   shardTotal: [3]
+      matrix:
+        shardIndex: [1,2,3]
+        shardTotal: [3]
     steps:
     - uses: actions/checkout@v4
-    - name: install npm deps
+
+    - name: Install dependencies
       run: npm ci --legacy-peer-deps
-    - name: update Playwright snapshots
+
+    - name: Update Playwright snapshots
       run: npx playwright test --update-snapshots --project=screenshot-tests
-    - name: running tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: always()
+
+    - name: Run Playwright tests
+      run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+
+    - name: Upload blob report to GitHub Actions Artifacts
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@v4
       with:
-        path: playwright-report/
+        name: blob-report-${{ matrix.shardIndex }}
+        path: blob-report
+        retention-days: 1
+
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [playwright-tests]
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Download blob reports from GitHub Actions Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: all-blob-reports
+        pattern: blob-report-*
+        merge-multiple: true
+
+    - name: Merge into HTML Report
+      run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+    - name: Upload HTML report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report--attempt-${{ github.run_attempt }}
+        path: playwright-report
         retention-days: 7
