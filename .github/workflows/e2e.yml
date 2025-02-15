@@ -40,7 +40,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: install npm deps
       run: npm ci --legacy-peer-deps
-    - name: Update Playwright snapshots
+    - name: update Playwright snapshots
       run: npx playwright test --update-snapshots --project=screenshot-tests
     - name: running tests
       run: npx playwright test
