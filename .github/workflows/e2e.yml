@@ -43,7 +43,7 @@ jobs:
     - name: Update Playwright snapshots
       run: npx playwright test --update-snapshots
     - name: running tests
-      run: npx playwright test --project=chromium --project=webkit
+      run: npx playwright test
     - uses: actions/upload-artifact@v4
       if: always()
       with:

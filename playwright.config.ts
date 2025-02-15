@@ -5,6 +5,7 @@ import process from 'node:process';
 
 export default defineConfig({
   testDir: './tests',
+  reporter: process.env.CI ? 'blob' : 'html',
   fullyParallel: true,
   workers: '90%',
 
