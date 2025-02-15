@@ -8,7 +8,7 @@ shopTest(
   },
   async ({ app, page }) => {
     await app.contact.open();
-    await expect(page).toHaveScreenshot('contact-page-no-auth-linux.png', {
+    await expect(page).toHaveScreenshot('contact-page-no-auth.png', {
       mask: [page.getByRole('link', { name: 'Practice Software Testing - Toolshop' })]
     });
   }
