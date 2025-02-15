@@ -5,7 +5,6 @@ import process from 'node:process';
 
 export default defineConfig({
   testDir: './tests',
-  reporter: process.env.CI ? 'blob' : 'html',
   fullyParallel: true,
   workers: '90%',
 
@@ -13,10 +12,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  reporter: [
-    ['html', { open: 'never' }],
-    ['list', { printSteps: true }]
-  ],
+  reporter: [['html', { open: 'never' }], ['list', { printSteps: true }], [process.env.CI ? 'blob' : 'html']],
 
   use: {
     baseURL: env.BASE_URL,
