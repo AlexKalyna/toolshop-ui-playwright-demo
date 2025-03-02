@@ -1,12 +1,13 @@
 import test from '@playwright/test';
 import { Application } from '../app';
-import { UserContext } from '../models/api-models/models';
+import { UserContext, AuthResponse } from '../models/api-models/models';
 import { faker } from '@faker-js/faker';
 import { env } from '../env';
 
 export const shopTest = test.extend<{
   app: Application;
   newUser: UserContext;
+  adminUser: AuthResponse;
   itemAddedToCart: {
     productSlug: string;
   };
@@ -42,11 +43,17 @@ export const shopTest = test.extend<{
     await use({ userModel, createdUser });
   },
 
+  adminUser: async ({ app }, use) => {
+    const loggedInAdminUser = await app.headlessLogin({ email: env.ADMIN_EMAIL, password: env.ADMIN_PASSWORD });
+    await app.home.open();
+
+    await use(loggedInAdminUser as unknown as AuthResponse);
+  },
+
   itemAddedToCart: async ({ app, page }, use) => {
     //TBD: refactor fixture
     const productsResponse = await (await page.request.get(`${env.API_URL}products?between=price,1,100&page=1`)).json();
     const productSlug = productsResponse.data[0].id;
-    console.log('Product slug: ', productSlug);
     await page.goto(`product/${productSlug}`);
     await app.product.addToCart();
 
@@ -59,7 +66,6 @@ export const shopTest = test.extend<{
     const productSlug = productsResponse.data[2].id;
     await page.goto(`product/${productSlug}`);
     await app.product.addToFavorites();
-    // await page.waitForTimeout(2000);
     await app.product.expectProductIsAddedToFavorites();
 
     await use({ productSlug });
