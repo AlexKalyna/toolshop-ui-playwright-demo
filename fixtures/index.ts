@@ -1,12 +1,13 @@
 import test from '@playwright/test';
 import { Application } from '../app';
-import { UserContext } from '../models/api-models/models';
+import { UserContext, AuthResponse } from '../models/api-models/models';
 import { faker } from '@faker-js/faker';
 import { env } from '../env';
 
 export const shopTest = test.extend<{
   app: Application;
   newUser: UserContext;
+  adminUser: AuthResponse;
   itemAddedToCart: {
     productSlug: string;
   };
@@ -20,21 +21,7 @@ export const shopTest = test.extend<{
   },
 
   newUser: async ({ app }, use) => {
-    const userModel = {
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      address: {
-        street: faker.location.streetAddress(),
-        city: faker.location.city(),
-        state: faker.location.state(),
-        country: faker.location.country(),
-        postal_code: faker.location.zipCode()
-      },
-      phone: faker.phone.number(),
-      password: faker.internet.password({ prefix: 'A1!a' }),
-      email: `test+${faker.string.uuid()}@test.com`
-    };
-
+    const userModel = createUserModel();
     const createdUser = await app.api.auth.register(userModel);
     await app.headlessLogin(userModel);
     await app.home.open();
@@ -42,11 +29,17 @@ export const shopTest = test.extend<{
     await use({ userModel, createdUser });
   },
 
+  adminUser: async ({ app }, use) => {
+    const loggedInAdminUser = await app.headlessLogin({ email: env.ADMIN_EMAIL, password: env.ADMIN_PASSWORD });
+    await app.home.open();
+
+    await use(loggedInAdminUser as unknown as AuthResponse);
+  },
+
   itemAddedToCart: async ({ app, page }, use) => {
     //TBD: refactor fixture
     const productsResponse = await (await page.request.get(`${env.API_URL}products?between=price,1,100&page=1`)).json();
     const productSlug = productsResponse.data[0].id;
-    console.log('Product slug: ', productSlug);
     await page.goto(`product/${productSlug}`);
     await app.product.addToCart();
 
@@ -59,9 +52,26 @@ export const shopTest = test.extend<{
     const productSlug = productsResponse.data[2].id;
     await page.goto(`product/${productSlug}`);
     await app.product.addToFavorites();
-    // await page.waitForTimeout(2000);
     await app.product.expectProductIsAddedToFavorites();
 
     await use({ productSlug });
   }
 });
+
+function createUserModel() {
+  return {
+    first_name: faker.person.firstName(),
+    last_name: faker.person.lastName(),
+    address: {
+      street: faker.location.streetAddress(),
+      city: faker.location.city(),
+      state: faker.location.state(),
+      country: faker.location.country(),
+      postal_code: faker.location.zipCode()
+    },
+    dob: '1970-01-01',
+    phone: faker.phone.number(),
+    password: faker.internet.password({ prefix: 'A1!a' }),
+    email: `test+${faker.string.uuid()}@test.com`
+  };
+}

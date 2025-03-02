@@ -11,6 +11,7 @@ import { API } from '../api';
 import { Favorites } from './pages/user/favorites.page';
 import { Profile } from './pages/user/profile.page';
 import { Base } from './components/base.components';
+import { Dashboard } from './pages/admin/dasboard.page';
 
 export class Application extends PageHolder {
   public login = new Login(this.page);
@@ -25,6 +26,7 @@ export class Application extends PageHolder {
   public favorites = new Favorites(this.page);
   public profile = new Profile(this.page);
   public base = new Base(this.page);
+  public dashboard = new Dashboard(this.page);
 
   async headlessLogin(data: { email: string; password: string }) {
     try {

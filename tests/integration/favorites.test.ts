@@ -20,7 +20,7 @@ shopTest(
     tag: ['@smoke', '@e2e', '@C261428']
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async ({ app: { favorites }, newUser, itemAddedToFavorites }) => {
+  async ({ app: { favorites, api }, newUser, itemAddedToFavorites }) => {
     await favorites.open();
     await favorites.clickDeleteItem();
     await favorites.expectEmptyFavoritesList();
