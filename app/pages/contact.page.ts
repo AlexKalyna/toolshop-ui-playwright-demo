@@ -5,7 +5,7 @@ import { ContactData } from '../../models/user';
 
 export class Contact extends AppPage {
   public pagePath = '/contact';
-  private _filePath = 'test-data/attachments/allowed-tes-file-0-Kb.txt';
+  private _filePath = 'data/attachments/allowed-tes-file-0-Kb.txt';
 
   private readonly submitButton = this.page.getByTestId('contact-submit');
   private readonly contactPageTitle = this.page.locator('div.container.auth-container > div > div > h3');

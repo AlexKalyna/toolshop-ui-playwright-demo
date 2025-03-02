@@ -21,21 +21,7 @@ export const shopTest = test.extend<{
   },
 
   newUser: async ({ app }, use) => {
-    const userModel = {
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      address: {
-        street: faker.location.streetAddress(),
-        city: faker.location.city(),
-        state: faker.location.state(),
-        country: faker.location.country(),
-        postal_code: faker.location.zipCode()
-      },
-      phone: faker.phone.number(),
-      password: faker.internet.password({ prefix: 'A1!a' }),
-      email: `test+${faker.string.uuid()}@test.com`
-    };
-
+    const userModel = createUserModel();
     const createdUser = await app.api.auth.register(userModel);
     await app.headlessLogin(userModel);
     await app.home.open();
@@ -71,3 +57,21 @@ export const shopTest = test.extend<{
     await use({ productSlug });
   }
 });
+
+function createUserModel() {
+  return {
+    first_name: faker.person.firstName(),
+    last_name: faker.person.lastName(),
+    address: {
+      street: faker.location.streetAddress(),
+      city: faker.location.city(),
+      state: faker.location.state(),
+      country: faker.location.country(),
+      postal_code: faker.location.zipCode()
+    },
+    dob: '1970-01-01',
+    phone: faker.phone.number(),
+    password: faker.internet.password({ prefix: 'A1!a' }),
+    email: `test+${faker.string.uuid()}@test.com`
+  };
+}
