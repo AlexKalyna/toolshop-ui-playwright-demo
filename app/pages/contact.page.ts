@@ -51,8 +51,8 @@ export class Contact extends AppPage {
   }
 
   @step()
-  async uploadAttachment() {
-    await this.page.setInputFiles(this.fileInputSelector, this._filePath);
+  async uploadAttachment(filePath?: string) {
+    await this.page.setInputFiles(this.fileInputSelector, filePath ?? this._filePath);
   }
 
   @step()

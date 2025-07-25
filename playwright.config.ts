@@ -22,7 +22,7 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     video: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    headless: process.env.CI ? true : false
+    headless: process.env.CI ? true : true
   },
 
   projects: [

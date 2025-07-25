@@ -25,6 +25,26 @@ export class Profile extends AppPage {
   }
 
   @step()
+  async fillFirstName(firstName: string) {
+    await this.firstNameInput.fill(firstName);
+  }
+
+  @step()
+  async fillLastName(lastName: string) {
+    await this.lastNameInput.fill(lastName);
+  }
+
+  @step()
+  async fillEmail(email: string) {
+    await this.emailInput.fill(email);
+  }
+
+  @step()
+  async fillPhone(phone: string) {
+    await this.phoneInput.fill(phone);
+  }
+
+  @step()
   async fillStreet(address: string) {
     await this.streetInput.fill(address);
   }
