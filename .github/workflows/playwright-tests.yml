@@ -9,7 +9,9 @@ jobs:
     name: Lint Code
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
       - name: Run ESLint (Code Quality)
         run: npm run lint
@@ -18,7 +20,9 @@ jobs:
     name: Check Code Formatting
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
       - name: Run Prettier (Formatting Check)
         run: npm run format:check
@@ -27,7 +31,9 @@ jobs:
     name: Security Audit
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
       - name: Run npm audit
         run: npm run audit
@@ -37,7 +43,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
       - name: Run Security Scan
         uses: ./.github/actions/security-scan
@@ -50,7 +58,9 @@ jobs:
     name: Type Check
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
       - name: Run TypeScript Type Check
         run: npm run type-check
@@ -59,7 +69,9 @@ jobs:
     name: Build Project (Demo)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
       - name: Build Project (Demo)
         run: echo 'No build needed (demo only)'
@@ -69,7 +81,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
       - name: Run Code Coverage
         run: npm run coverage
@@ -103,7 +117,9 @@ jobs:
         shardIndex: [1, 2, 3]
         shardTotal: [3]
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
 
       - name: Update Visual Snapshots
@@ -128,7 +144,9 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -156,7 +174,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [merge-reports]
     steps:
-      - name: Checkout and Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
         uses: ./.github/actions/setup-node-project
       - name: Download Test Results
         uses: actions/download-artifact@v4

@@ -1,5 +1,5 @@
 name: Setup Node Project
-description: Checkout and install dependencies
+description: Install dependencies with caching
 runs:
   using: composite
   steps:
@@ -12,8 +12,6 @@ runs:
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-
-    - uses: actions/checkout@v4
 
     - name: Install dependencies
       run: npm ci --legacy-peer-deps
