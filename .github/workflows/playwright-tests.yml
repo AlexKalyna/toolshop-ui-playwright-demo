@@ -1,0 +1,262 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  eslint-check:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-node-project
+      - name: Run ESLint (Code Quality)
+        run: npm run lint
+
+  format-check:
+    name: Check Code Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-node-project
+      - name: Run Prettier (Formatting Check)
+        run: npm run format:check
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-node-project
+      - name: Run npm audit
+        run: npm run audit
+
+  security-scan:
+    name: Comprehensive Security Scan
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-node-project
+      - name: Run Security Scan
+        uses: ./.github/actions/security-scan
+        with:
+          scan_type: 'all'
+          severity_threshold: 'MEDIUM'
+          container_image: 'toolshop-app:latest'
+
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-node-project
+      - name: Run TypeScript Type Check
+        run: npm run type-check
+
+  build:
+    name: Build Project (Demo)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-node-project
+      - name: Build Project (Demo)
+        run: echo 'No build needed (demo only)'
+
+  playwright-tests:
+    name: Run Playwright Tests (Sharded)
+    needs: [eslint-check, format-check, security-audit, security-scan, type-check, build]
+    env:
+      HOME: /root
+      BASE_URL: ${{secrets.BASE_URL}}
+      API_URL: ${{ secrets.API_URL }}
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      ADMIN_USERNAME: ${{ vars.ADMIN_USERNAME }}
+      CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
+      CUSTOMER_PASSWORD: ${{ secrets.CUSTOMER_PASSWORD }}
+      CUSTOMER_USERNAME: ${{ vars.CUSTOMER_USERNAME }}
+
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.54.1-jammy
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3]
+        shardTotal: [3]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-node-project
+
+      - name: Update Visual Snapshots
+        run: npm run update:snapshots
+
+      - name: Run Playwright Tests (Shard ${{ matrix.shardIndex }})
+        run: npm run test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+
+      - name: Save Test Results (Blob Report)
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report
+          retention-days: 1
+
+  merge-reports:
+    name: Merge and Publish Test Report
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [playwright-tests]
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-node-project
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Download All Test Results
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+      - name: Merge Results into HTML Report
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload HTML Test Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: playwright-report
+          retention-days: 7
+
+  test-analytics:
+    name: Test Analytics & Reporting
+    runs-on: ubuntu-latest
+    needs: [merge-reports]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-node-project
+      - name: Download Test Results
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+      - name: Run Test Analytics
+        uses: ./.github/actions/test-analytics
+        with:
+          test_results_path: 'all-blob-reports'
+          analysis_type: 'all'
+          trend_days: '7'
+
+  deploy-dev:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    needs: [merge-reports]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Deploy to Development Environment
+        uses: ./.github/actions/deploy
+        with:
+          environment: 'dev'
+          deployment_strategy: 'rolling'
+          docker_image: 'toolshop-app-dev'
+          version: '${{ github.sha }}'
+          health_check_url: '${{ secrets.DEV_HEALTH_CHECK_URL }}'
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: [merge-reports]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Deploy to Staging Environment
+        uses: ./.github/actions/deploy
+        with:
+          environment: 'staging'
+          deployment_strategy: 'blue-green'
+          docker_image: 'toolshop-app-staging'
+          version: '${{ github.sha }}'
+          health_check_url: '${{ secrets.STAGING_HEALTH_CHECK_URL }}'
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [deploy-staging]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Deploy to Production Environment
+        uses: ./.github/actions/deploy
+        with:
+          environment: 'prod'
+          deployment_strategy: 'canary'
+          docker_image: 'toolshop-app-prod'
+          version: '${{ github.sha }}'
+          health_check_url: '${{ secrets.PROD_HEALTH_CHECK_URL }}'
+
+  notify-failure:
+    name: Notify Teams on Failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [merge-reports, test-analytics, deploy-dev, deploy-staging, deploy-production]
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Send Failure Notification
+        uses: ./.github/actions/notify-teams
+        with:
+          webhook_url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          title: '🚨 Playwright E2E Tests Failed'
+          message: 'The Playwright E2E test suite has failed. Please check the workflow for details.'
+          theme_color: 'FF0000'
+          status: 'FAILED'
+
+  notify-success:
+    name: Notify Teams on Success
+    runs-on: ubuntu-latest
+    if: success()
+    needs: [merge-reports, test-analytics, deploy-dev, deploy-staging, deploy-production]
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Send Success Notification
+        uses: ./.github/actions/notify-teams
+        with:
+          webhook_url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          title: '✅ Playwright E2E Tests Passed'
+          message: 'All tests passed and deployment completed successfully!'
+          theme_color: '00FF00'
+          status: 'SUCCESS'

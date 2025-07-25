@@ -1,0 +1,86 @@
+name: Deploy Application
+description: Deploy application to specified environment with customizable deployment strategy
+inputs:
+  environment:
+    description: 'Target environment (dev, staging, prod)'
+    required: true
+  deployment_strategy:
+    description: 'Deployment strategy (rolling, blue-green, canary)'
+    required: false
+    default: 'rolling'
+  docker_image:
+    description: 'Docker image to deploy'
+    required: false
+    default: 'toolshop-app'
+  version:
+    description: 'Application version to deploy'
+    required: false
+    default: '${{ github.sha }}'
+  health_check_url:
+    description: 'Health check URL for deployment verification'
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - name: Setup deployment environment
+      shell: bash
+      run: |
+        echo "🚀 Starting deployment to ${{ inputs.environment }}"
+        echo "Strategy: ${{ inputs.deployment_strategy }}"
+        echo "Version: ${{ inputs.version }}"
+        echo "Image: ${{ inputs.docker_image }}"
+
+    - name: Validate deployment configuration
+      shell: bash
+      run: |
+        echo "✅ Validating deployment configuration..."
+        if [ "${{ inputs.environment }}" = "prod" ]; then
+          echo "⚠️  Production deployment detected - extra validation required"
+          # In real scenario, you might check for required approvals, etc.
+        fi
+
+    - name: Deploy using ${{ inputs.deployment_strategy }} strategy
+      shell: bash
+      run: |
+        echo "📦 Deploying with ${{ inputs.deployment_strategy }} strategy..."
+
+        case "${{ inputs.deployment_strategy }}" in
+          "rolling")
+            echo "🔄 Rolling deployment: Update instances one by one"
+            # Simulate rolling deployment
+            sleep 5
+            ;;
+          "blue-green")
+            echo "🔵🟢 Blue-green deployment: Deploy to new environment, then switch"
+            # Simulate blue-green deployment
+            sleep 8
+            ;;
+          "canary")
+            echo "🐦 Canary deployment: Deploy to subset of users first"
+            # Simulate canary deployment
+            sleep 6
+            ;;
+        esac
+
+    - name: Verify deployment health
+      shell: bash
+      run: |
+        echo "🏥 Checking deployment health..."
+        if [ -n "${{ inputs.health_check_url }}" ]; then
+          echo "Health check URL: ${{ inputs.health_check_url }}"
+          # In real scenario, you would curl the health check URL
+        else
+          echo "No health check URL provided, skipping health verification"
+        fi
+        # Simulate health check
+        sleep 3
+        echo "✅ Deployment health check passed"
+
+    - name: Update deployment status
+      shell: bash
+      run: |
+        echo "📊 Deployment completed successfully!"
+        echo "Environment: ${{ inputs.environment }}"
+        echo "Version: ${{ inputs.version }}"
+        echo "Deployment time: $(date)"

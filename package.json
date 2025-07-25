@@ -9,9 +9,18 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "audit": "npm audit --audit-level=high",
     "test:screenshot": "npx playwright test --project=screenshot-tests",
-    "update:snapshots": "npx playwright test --project=screenshot-tests --update-snapshots"
-
+    "update:snapshots": "npx playwright test --project=screenshot-tests --update-snapshots",
+    "postinstall": "husky install"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,jsx,json,md,yml,yaml}": [
+      "npm run lint:fix",
+      "npm run format"
+    ]
   },
   "keywords": [],
   "author": "Oleksandr Kalyna",
@@ -19,8 +28,8 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@playwright/test": "1.50.1",
-    "@types/faker": "^6.6.8",
+    "@faker-js/faker": "^9.9.0",
+    "@playwright/test": "1.54.1",
     "@types/node": "^22.10.2",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
@@ -29,11 +38,12 @@
     "eslint-plugin-playwright": "^2.2.0",
     "eslint-plugin-prettier": "^5.2.3",
     "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
     "prettier": "^3.5.0",
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@faker-js/faker": "^9.5.0",
     "dotenv": "^16.4.7",
     "envalid": "^8.0.0"
   },
