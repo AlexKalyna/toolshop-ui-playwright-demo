@@ -1,0 +1,9 @@
+name: Install Docker Compose
+description: Installs docker-compose on Ubuntu
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+      shell: bash

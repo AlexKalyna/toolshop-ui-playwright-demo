@@ -1,0 +1,109 @@
+name: Security Scan and Fix
+description: Scan for and optionally fix npm security vulnerabilities in the frontend container
+inputs:
+  auto-fix:
+    description: 'Whether to automatically fix vulnerabilities (true/false)'
+    required: false
+    default: 'false'
+  force-fix:
+    description: 'Whether to use --force flag for fixes (true/false)'
+    required: false
+    default: 'false'
+runs:
+  using: "composite"
+  steps:
+    - name: NPM Security Scan and Fix
+      run: |
+        echo "🔐 === NPM SECURITY SCAN ==="
+        # Check if practice-software-testing directory exists, if not we're already in the right location
+        if [ -d "practice-software-testing" ]; then
+          cd practice-software-testing
+        fi
+        
+        # Check if frontend container is running
+        if docker-compose ps angular-ui | grep -q "Up"; then
+          echo "✅ Frontend container is running - performing security scan..."
+          
+          # Run npm audit to check for vulnerabilities
+          echo "🔍 Scanning for npm vulnerabilities..."
+          docker-compose exec -T angular-ui npm audit --json > audit_results.json 2>/dev/null || true
+          
+          # Parse and display results
+          if [ -f "audit_results.json" ] && [ -s "audit_results.json" ]; then
+            echo "📊 Vulnerability Summary:"
+            cat audit_results.json | jq -r '.metadata.vulnerabilities | to_entries[] | "\(.key): \(.value)"' 2>/dev/null || echo "Could not parse vulnerability summary"
+            
+            # Check total vulnerabilities
+            TOTAL_VULNS=$(cat audit_results.json | jq '.metadata.vulnerabilities.total' 2>/dev/null || echo "0")
+            
+            if [ "$TOTAL_VULNS" -gt 0 ]; then
+              echo "🚨 Found $TOTAL_VULNS total vulnerabilities"
+              
+              # Show high and critical vulnerabilities
+              echo "🔥 High/Critical vulnerabilities:"
+              cat audit_results.json | jq -r '.vulnerabilities | to_entries[] | select(.value.severity == "high" or .value.severity == "critical") | "\(.value.severity | ascii_upcase): \(.key) - \(.value.title)"' 2>/dev/null || echo "Could not parse high/critical vulnerabilities"
+              
+              # Auto-fix if requested
+              if [ "${{ inputs.auto-fix }}" = "true" ]; then
+                echo "🔧 Auto-fix enabled - attempting to fix vulnerabilities..."
+                
+                if [ "${{ inputs.force-fix }}" = "true" ]; then
+                  echo "⚠️  Using --force flag for fixes (may introduce breaking changes)"
+                  docker-compose exec -T angular-ui npm audit fix --force || echo "❌ Force fix failed"
+                else
+                  echo "🛠️  Applying safe fixes..."
+                  docker-compose exec -T angular-ui npm audit fix || echo "❌ Safe fix failed"
+                fi
+                
+                # Re-scan after fixes
+                echo "🔍 Re-scanning after fixes..."
+                docker-compose exec -T angular-ui npm audit --json > audit_results_after.json 2>/dev/null || true
+                
+                if [ -f "audit_results_after.json" ] && [ -s "audit_results_after.json" ]; then
+                  REMAINING_VULNS=$(cat audit_results_after.json | jq '.metadata.vulnerabilities.total' 2>/dev/null || echo "0")
+                  FIXED_VULNS=$((TOTAL_VULNS - REMAINING_VULNS))
+                  
+                  echo "✅ Security fix summary:"
+                  echo "   - Fixed: $FIXED_VULNS vulnerabilities"
+                  echo "   - Remaining: $REMAINING_VULNS vulnerabilities"
+                  
+                  if [ "$REMAINING_VULNS" -gt 0 ]; then
+                    echo "⚠️  Some vulnerabilities could not be automatically fixed"
+                    echo "📋 Manual review required for remaining vulnerabilities"
+                  else
+                    echo "🎉 All vulnerabilities have been fixed!"
+                  fi
+                fi
+                
+              else
+                echo "ℹ️  Auto-fix disabled - vulnerabilities identified but not fixed"
+                echo "💡 To enable auto-fix, set auto-fix input to 'true'"
+              fi
+              
+            else
+              echo "✅ No vulnerabilities found - container is secure!"
+            fi
+            
+          else
+            echo "⚠️  Could not generate audit report - container may not be ready"
+            
+            # Try basic audit without JSON output
+            echo "🔍 Attempting basic audit..."
+            docker-compose exec -T angular-ui npm audit || echo "❌ Basic audit also failed"
+          fi
+          
+          # Clean up temporary files
+          rm -f audit_results.json audit_results_after.json 2>/dev/null || true
+          
+        else
+          echo "❌ Frontend container is not running - cannot perform security scan"
+          echo "📋 Container status:"
+          docker-compose ps angular-ui || echo "❌ Could not get container status"
+        fi
+        
+        # Return to original directory if we changed
+        if [ -d "../practice-software-testing" ]; then
+          cd ..
+        fi
+        echo "🔐 === SECURITY SCAN COMPLETE ==="
+      shell: bash 

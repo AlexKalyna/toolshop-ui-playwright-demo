@@ -41,8 +41,8 @@ export class Contact extends AppPage {
   }
 
   @step()
-  async selectSubject(subject: string = 'Return') {
-    if (subject) await this.subjectDropdown.selectOption(subject);
+  async selectSubject(subject: string) {
+    await this.subjectDropdown.selectOption(subject);
   }
 
   @step()

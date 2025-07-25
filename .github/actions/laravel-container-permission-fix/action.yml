@@ -1,0 +1,85 @@
+name: Laravel Container Permission Fix
+description: Fix Laravel permissions by running commands inside the container with proper user context
+runs:
+  using: "composite"
+  steps:
+    - name: Container-internal permission fixes
+      run: |
+        cd practice-software-testing
+        echo "🔧 === LARAVEL CONTAINER PERMISSION FIX ==="
+        
+        echo "🔍 Current container user context:"
+        docker-compose exec -T laravel-api whoami || echo "Could not determine user"
+        docker-compose exec -T laravel-api id || echo "Could not get user ID"
+        
+        echo "📁 Fixing permissions using container's internal context..."
+        
+        # Method 1: Use container's internal user to fix permissions
+        echo "🗂️ Setting storage directory permissions (as container user)..."
+        docker-compose exec -T --user=root laravel-api chmod -R 777 storage || echo "⚠️  Root chmod failed, trying alternative"
+        docker-compose exec -T --user=root laravel-api chown -R www-data:www-data storage || echo "⚠️  Root chown failed"
+        
+        # Method 2: Alternative approach using cp to create writable files
+        echo "📝 Creating writable cache files..."
+        docker-compose exec -T laravel-api touch storage/logs/laravel.log || echo "⚠️  Could not create log file"
+        docker-compose exec -T --user=root laravel-api chmod 666 storage/logs/laravel.log || echo "⚠️  Could not set log file permissions"
+        
+        # Method 3: Ensure bootstrap cache is writable
+        echo "🗂️ Setting bootstrap/cache permissions..."
+        docker-compose exec -T --user=root laravel-api chmod -R 777 bootstrap/cache || echo "⚠️  Bootstrap cache chmod failed"
+        docker-compose exec -T --user=root laravel-api chown -R www-data:www-data bootstrap/cache || echo "⚠️  Bootstrap cache chown failed"
+        
+        # Method 4: Create cache files with proper permissions
+        echo "📄 Pre-creating cache files..."
+        docker-compose exec -T laravel-api touch bootstrap/cache/config.php || echo "ℹ️  Config cache file exists"
+        docker-compose exec -T --user=root laravel-api chmod 666 bootstrap/cache/config.php || echo "⚠️  Config cache permissions failed"
+        
+        docker-compose exec -T laravel-api touch bootstrap/cache/routes-v7.php || echo "ℹ️  Routes cache file exists"
+        docker-compose exec -T --user=root laravel-api chmod 666 bootstrap/cache/routes-v7.php || echo "⚠️  Routes cache permissions failed"
+        
+        # Verify storage structure
+        echo "📋 Verifying storage structure:"
+        docker-compose exec -T laravel-api ls -la storage/
+        echo "📋 Verifying bootstrap/cache structure:"
+        docker-compose exec -T laravel-api ls -la bootstrap/cache/
+        
+        # Test file writing capability
+        echo "🧪 Testing write capabilities..."
+        docker-compose exec -T laravel-api sh -c 'echo "test" > storage/logs/test.log && echo "✅ Storage write test passed" || echo "❌ Storage write test failed"'
+        docker-compose exec -T laravel-api sh -c 'echo "test" > bootstrap/cache/test.php && echo "✅ Cache write test passed" || echo "❌ Cache write test failed"'
+        
+        # Clean up test files
+        docker-compose exec -T laravel-api rm -f storage/logs/test.log bootstrap/cache/test.php || echo "ℹ️  Test cleanup completed"
+        
+        # Now try Laravel operations with fixed permissions
+        echo "🔄 Attempting Laravel operations with fixed permissions..."
+        
+        # Clear existing caches first
+        docker-compose exec -T laravel-api php artisan config:clear || echo "⚠️  Config clear failed"
+        docker-compose exec -T laravel-api php artisan route:clear || echo "⚠️  Route clear failed"
+        
+        # Try to regenerate caches
+        echo "⚙️ Testing config cache generation..."
+        docker-compose exec -T laravel-api php artisan config:cache && echo "✅ Config cache successful" || echo "❌ Config cache still failing"
+        
+        echo "🛣️ Testing route cache generation..."
+        docker-compose exec -T laravel-api php artisan route:cache && echo "✅ Route cache successful" || echo "❌ Route cache still failing"
+        
+        # Final API test
+        echo "🌐 Final API endpoint test..."
+        sleep 5
+        
+        # Test the specific endpoint
+        if curl -f -s http://localhost:8091/brands >/dev/null 2>&1; then
+          echo "✅ API endpoint working!"
+          echo "📋 Sample API response:"
+          curl -s http://localhost:8091/brands | head -c 200
+        else
+          echo "❌ API endpoint still failing"
+          echo "🔍 Debugging API response:"
+          curl -v http://localhost:8091/brands 2>&1 | head -10
+        fi
+        
+        # Return to original directory if we changed
+        echo "🔧 === LARAVEL CONTAINER PERMISSION FIX COMPLETE ==="
+      shell: bash 

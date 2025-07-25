@@ -1,0 +1,154 @@
+name: Debug Services
+description: Comprehensive service debugging for failed startups with Node.js version handling
+runs:
+  using: "composite"
+  steps:
+    - name: Comprehensive service debugging
+      run: |
+        cd practice-software-testing
+        echo "🔍 === COMPREHENSIVE SERVICE DEBUGGING ==="
+        echo "Timestamp: $(date)"
+        echo ""
+        
+        echo "📦 === DOCKER CONTAINER STATUS ==="
+        docker ps -a || echo "❌ Docker ps failed"
+        echo ""
+        
+        echo "🐳 === DOCKER COMPOSE STATUS ==="
+        # Remove all checks for 'app' directory, always assume 'practice-software-testing'
+        docker-compose ps || echo "❌ Docker compose ps failed"
+        echo ""
+        
+        echo "🔌 === PORT CHECKS ==="
+        echo "Checking port 3306 (MariaDB):"
+        nc -z localhost 3306 && echo "✅ Port 3306 open" || echo "❌ Port 3306 closed"
+        
+        echo "Checking port 8091 (API):"
+        nc -z localhost 8091 && echo "✅ Port 8091 open" || echo "❌ Port 8091 closed"
+        
+        echo "Checking port 4200 (Frontend):"
+        nc -z localhost 4200 && echo "✅ Port 4200 open" || echo "❌ Port 4200 closed"
+        echo ""
+        
+        echo "🌐 === HTTP CHECKS ==="
+        echo "Testing API root:"
+        curl -v http://localhost:8091/ 2>&1 || echo "❌ API root failed"
+        echo ""
+        
+        echo "Testing API brands endpoint:"
+        curl -v http://localhost:8091/brands 2>&1 || echo "❌ API brands failed"
+        echo ""
+        
+        echo "Testing Frontend root:"
+        curl -v http://localhost:4200/ 2>&1 || echo "❌ Frontend root failed"
+        echo ""
+        
+        echo "🔍 Enhanced Frontend Diagnostics:"
+        echo "Testing with different timeouts and methods..."
+        curl -m 10 --connect-timeout 5 http://localhost:4200/ 2>&1 || echo "❌ Frontend with timeout failed"
+        echo ""
+        
+        echo "Testing Frontend Angular routes:"
+        curl -v http://localhost:4200/auth/login 2>&1 || echo "❌ Frontend login route failed"
+        echo ""
+        
+        echo "Checking if Angular dev server is running in container:"
+        docker-compose exec -T angular-ui ps aux | grep -E "(ng|node|angular)" || echo "ℹ️  No Angular processes found"
+        echo ""
+        
+        echo "📜 === CONTAINER LOGS (Last 100 lines) ==="
+        echo "--- API Container Logs ---"
+        docker-compose logs --tail=100 laravel-api || echo "❌ API logs failed"
+        echo ""
+        
+        echo "--- Frontend Container Logs (CRITICAL - Container Analysis) ---"
+        docker-compose logs --tail=100 angular-ui || echo "❌ Frontend logs failed"
+        echo ""
+        
+        echo "--- Full Frontend Container Logs (All startup logs) ---"
+        docker-compose logs angular-ui || echo "❌ Full frontend logs failed"
+        echo ""
+        
+        echo "--- Database Container Logs ---"
+        docker-compose logs --tail=50 mariadb || echo "❌ Database logs failed"
+        echo ""
+        
+        echo "--- Web Server Container Logs ---"
+        docker-compose logs --tail=50 web || echo "❌ Web server logs failed"
+        echo ""
+        
+        echo "💾 === DISK SPACE ==="
+        df -h || echo "❌ Disk space check failed"
+        echo ""
+        
+        echo "🧠 === MEMORY USAGE ==="
+        free -h || echo "❌ Memory check failed"
+        echo ""
+        
+        echo "🔗 === NETWORK INFO ==="
+        netstat -tlnp | grep -E ':(3306|4200|8091)' || echo "❌ No services listening on expected ports"
+        echo ""
+        
+        echo "🐳 === DOCKER SYSTEM INFO ==="
+        docker system df || echo "❌ Docker system info failed"
+        echo ""
+        
+        echo "🔧 === ENHANCED CONTAINER TROUBLESHOOTING ==="
+        echo "Checking for failed containers..."
+        
+        # Check if angular-ui container failed
+        if docker ps -a | grep angular-ui | grep -q "Exited"; then
+          echo "🚨 Angular UI container has failed - performing enhanced diagnostics..."
+          
+          echo "📋 Container inspection:"
+          docker-compose ps angular-ui || echo "❌ Status check failed"
+          
+          echo "🔍 Checking Node.js version issue..."
+          if docker-compose logs angular-ui 2>/dev/null | grep -q "requires a minimum Node.js version"; then
+            echo "✅ IDENTIFIED: Node.js version compatibility issue detected"
+            echo "📊 Current Node.js version in container:"
+            docker-compose logs angular-ui | grep "Node.js version" || echo "❌ Could not extract version"
+            echo "📋 Required Node.js version:"
+            docker-compose logs angular-ui | grep "requires a minimum" || echo "❌ Could not extract requirement"
+            
+            echo "🔧 Attempting to rebuild with updated Node.js..."
+            echo "💡 Trying container rebuild to force image update..."
+            docker-compose build --no-cache angular-ui || echo "❌ Build failed"
+            
+            echo "🚀 Attempting restart with fresh build..."
+            docker-compose up -d angular-ui || echo "❌ Restart failed"
+            
+            echo "⏳ Waiting 60 seconds for Angular startup..."
+            sleep 60
+            
+            echo "📊 Container status after rebuild:"
+            docker-compose ps angular-ui || echo "❌ Status check failed"
+            
+            echo "🔍 Latest logs after rebuild:"
+            docker-compose logs --tail=50 angular-ui || echo "❌ Latest logs failed"
+            
+          else
+            echo "❓ Node.js version issue not detected, checking other failure modes..."
+            
+            echo "🔄 Attempting standard restart..."
+            docker-compose restart angular-ui || echo "❌ Restart failed"
+            sleep 30
+            echo "Container status after restart:"
+            docker-compose ps angular-ui || echo "❌ Status check failed"
+          fi
+          
+          echo "🌐 Final port accessibility check:"
+          sleep 10
+          nc -z localhost 4200 && echo "✅ Port 4200 is now accessible" || echo "❌ Port 4200 still not accessible"
+          
+        else
+          echo "ℹ️  Angular UI container status appears normal"
+          docker-compose ps angular-ui || echo "❌ Status check failed"
+        fi
+        
+        echo "🔧 === DOCKER COMPOSE TROUBLESHOOTING ==="
+        echo "📋 Docker Compose file validation:"
+        docker-compose config --quiet && echo "✅ docker-compose.yml is valid" || echo "❌ docker-compose.yml has issues"
+        
+        echo "🔍 === DEBUGGING COMPLETE ==="
+      shell: bash 

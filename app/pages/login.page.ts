@@ -10,6 +10,7 @@ export class Login extends AppPage {
   private readonly passwordInput = this.page.getByPlaceholder('Your password');
   private readonly loginButton = this.page.getByRole('button', { name: 'Login' });
   private readonly errorBlock = this.page.locator('.help-block');
+
   @step()
   async expectLoaded() {
     await this.page.waitForURL(this.pagePath);
@@ -31,6 +32,7 @@ export class Login extends AppPage {
   async clickLogin() {
     await this.loginButton.click();
   }
+
   @step()
   async expectInvalidCredentialsError() {
     await expect(await this.errorBlock).toHaveText('Invalid email or password');

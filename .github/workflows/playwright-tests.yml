@@ -1,0 +1,177 @@
+name: Playwright E2E Tests (Docker)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  eslint-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install NPM Dependencies with Cache
+        uses: ./.github/actions/install-npm-deps-with-cache
+      - name: Run eslint
+        run: npm run lint
+
+  playwright-tests:
+    needs: eslint-check
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: http://localhost:4200/
+      API_URL: http://localhost:8091/
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      ADMIN_USERNAME: ${{ vars.ADMIN_USERNAME }}
+      CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
+      CUSTOMER_PASSWORD: ${{ secrets.CUSTOMER_PASSWORD }}
+      CUSTOMER_USERNAME: ${{ vars.CUSTOMER_USERNAME }}
+    steps:
+      - name: Checkout CI workflow repository
+        uses: actions/checkout@v4
+
+      - name: Setup test project
+        uses: ./.github/actions/setup-practice-software-testing
+
+      - name: Ensure .env is present and correct
+        run: |
+          cat <<EOF > .env
+          APP_ENV=testing
+          APP_KEY=base64:$(head -c 32 /dev/urandom | base64)
+          DB_CONNECTION=mysql
+          DB_HOST=mariadb
+          DB_PORT=3306
+          DB_DATABASE=practice_software_testing
+          DB_USERNAME=root
+          DB_PASSWORD=secret
+          CACHE_DRIVER=file
+          QUEUE_CONNECTION=sync
+          SESSION_DRIVER=file
+          MAIL_MAILER=log
+          SPRINT=sprint5
+          # Add any other required variables for Laravel to bootstrap
+          EOF
+        working-directory: practice-software-testing
+
+      - name: Ensure Laravel storage and cache directories exist
+        run: |
+          mkdir -p storage/app storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+        working-directory: practice-software-testing
+
+      - name: Start test project
+        uses: ./.github/actions/docker-app-management
+        with:
+          operation: start
+
+      - name: Ensure Laravel storage and cache directories exist in container
+        run: |
+          docker compose exec -T --user root laravel-api mkdir -p /var/www/storage/app /var/www/storage/framework/cache /var/www/storage/framework/sessions /var/www/storage/framework/views /var/www/storage/logs /var/www/bootstrap/cache
+        working-directory: practice-software-testing
+
+      - name: Debug container contents
+        run: |
+          echo "=== Host directory contents ==="
+          ls -la
+          echo "=== Container /var/www contents ==="
+          docker compose exec -T laravel-api ls -la /var/www
+          echo "=== Container working directory ==="
+          docker compose exec -T laravel-api pwd
+        working-directory: practice-software-testing
+
+      - name: Install Composer in laravel-api container
+        run: |
+          docker compose exec -T laravel-api sh -c "\
+            php -r \"copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');\" && \
+            php /tmp/composer-setup.php --install-dir=/tmp --filename=composer && \
+            rm /tmp/composer-setup.php"
+        working-directory: practice-software-testing
+
+      - name: Fix permissions for Laravel before Composer install
+        run: |
+          docker compose exec -T --user root laravel-api chmod -R a+rwX /var/www/storage /var/www/bootstrap/cache
+        working-directory: practice-software-testing
+
+      - name: Install Composer dependencies in container
+        run: docker compose exec -T --user root laravel-api /tmp/composer install --no-plugins --ignore-platform-req=ext-ffi --no-progress
+        working-directory: practice-software-testing
+
+      - name: Clear Laravel caches after Composer install
+        run: |
+          docker compose exec -T laravel-api php artisan config:clear
+          docker compose exec -T laravel-api php artisan route:clear
+          docker compose exec -T laravel-api php artisan view:clear
+          docker compose exec -T laravel-api php artisan cache:clear
+        working-directory: practice-software-testing
+
+      - name: Fix permissions for vendor directory
+        run: docker compose exec -T --user root laravel-api chmod -R a+rwX /var/www/vendor
+        working-directory: practice-software-testing
+
+      - name: Run Laravel migrations and clear caches
+        run: |
+          docker compose exec -T laravel-api php artisan migrate:fresh --seed --force
+          docker compose exec -T laravel-api php artisan config:clear
+          docker compose exec -T laravel-api php artisan route:clear
+          docker compose exec -T laravel-api php artisan view:clear
+        working-directory: practice-software-testing
+
+      - name: Fix Laravel permissions and database
+        uses: ./.github/actions/laravel-container-permission-fix
+
+      - name: Wait for services to be ready
+        uses: ./.github/actions/services-health-check
+        with:
+          api-url: http://localhost:8091/brands
+          frontend-url: http://localhost:4200
+          max-wait-time: 420
+
+      - name: Security scan
+        uses: ./.github/actions/security-scan
+        with:
+          auto-fix: false
+
+      - name: Run Playwright snapshot update and tests in Docker
+        run: |
+          docker run --rm \
+            --init \
+            --ipc=host \
+            --network=host \
+            -v $PWD:/tests \
+            -w /tests \
+            -e CI=true \
+            -e BASE_URL \
+            -e API_URL \
+            -e ADMIN_EMAIL \
+            -e ADMIN_PASSWORD \
+            -e ADMIN_USERNAME \
+            -e CUSTOMER_EMAIL \
+            -e CUSTOMER_PASSWORD \
+            -e CUSTOMER_USERNAME \
+            mcr.microsoft.com/playwright:v1.54.1-jammy \
+            bash scripts/run-playwright-ci.sh
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+
+      - name: Debug services on failure
+        if: failure()
+        uses: ./.github/actions/debug-services
+
+      - name: Tear down test app stack
+        if: always()
+        working-directory: practice-software-testing
+        run: docker compose down
+
+      - name: Print API and Web logs if health check fails
+        if: failure()
+        working-directory: practice-software-testing
+        run: |
+          docker compose logs --tail=100 laravel-api || true
+          docker compose logs --tail=100 web || true 
