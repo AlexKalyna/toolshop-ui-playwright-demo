@@ -1,4 +1,5 @@
 import { shopTest } from '../../fixtures';
+import process from 'node:process';
 
 shopTest(
   'Customer can add product to favorites list',
@@ -21,6 +22,9 @@ shopTest(
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async ({ app: { favorites, api }, newUser, itemAddedToFavorites }) => {
+    if (process.env.CI) {
+      shopTest.skip(true, 'Skipped on CI due to Cloudflare check.');
+    }
     await favorites.open();
     await favorites.clickDeleteItem();
     await favorites.expectEmptyFavoritesList();
