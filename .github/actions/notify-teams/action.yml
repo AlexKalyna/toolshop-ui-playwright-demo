@@ -1,0 +1,67 @@
+name: Notify Teams
+description: Send notification to Microsoft Teams with customizable message
+inputs:
+  webhook_url:
+    description: 'Teams webhook URL'
+    required: true
+  title:
+    description: 'Notification title'
+    required: false
+    default: 'GitHub Workflow Notification'
+  message:
+    description: 'Custom message content'
+    required: false
+    default: ''
+  theme_color:
+    description: 'Theme color for the card (hex code)'
+    required: false
+    default: '0076D7'
+  status:
+    description: 'Workflow status (success/failure)'
+    required: false
+    default: 'unknown'
+runs:
+  using: composite
+  steps:
+    - name: Send Teams Notification
+      uses: romeovs/lnotify@v0.2.0
+      with:
+        webhook_url: ${{ inputs.webhook_url }}
+        template: |
+          {
+            "@type": "MessageCard",
+            "@context": "http://schema.org/extensions",
+            "themeColor": "${{ inputs.theme_color }}",
+            "summary": "${{ inputs.title }}",
+            "sections": [{
+              "activityTitle": "${{ inputs.title }}",
+              "activitySubtitle": "Workflow: ${{ github.workflow }}",
+              "text": "${{ inputs.message }}",
+              "facts": [
+                {
+                  "name": "Repository:",
+                  "value": "${{ github.repository }}"
+                },
+                {
+                  "name": "Branch:",
+                  "value": "${{ github.ref_name }}"
+                },
+                {
+                  "name": "Commit:",
+                  "value": "${{ github.sha }}"
+                },
+                {
+                  "name": "Triggered by:",
+                  "value": "${{ github.actor }}"
+                },
+                {
+                  "name": "Status:",
+                  "value": "${{ inputs.status }}"
+                },
+                {
+                  "name": "Workflow URL:",
+                  "value": "[View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+                }
+              ]
+            }]
+          }

@@ -41,6 +41,7 @@ This repository is a demo project showcasing UI testing using [Playwright](https
 ```shell
     npm run test
 ```
+
 6. Run all screenshot tests in production environment:
 
 To run all screenshot tests in the production environment, use:

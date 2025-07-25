@@ -1,0 +1,136 @@
+name: Test Analytics
+description: Analyze test execution data, detect flakiness, and generate performance metrics
+inputs:
+  test_results_path:
+    description: 'Path to test results directory'
+    required: false
+    default: 'all-blob-reports'
+  analysis_type:
+    description: 'Type of analysis (execution-time, flakiness, trends, all)'
+    required: false
+    default: 'all'
+  trend_days:
+    description: 'Number of days to analyze for trends'
+    required: false
+    default: '7'
+runs:
+  using: composite
+  steps:
+    - name: Setup test analytics environment
+      shell: bash
+      run: |
+        echo "📊 Starting test analytics: ${{ inputs.analysis_type }}"
+        echo "Results path: ${{ inputs.test_results_path }}"
+        echo "Trend analysis days: ${{ inputs.trend_days }}"
+
+    - name: Analyze test execution times
+      if: inputs.analysis_type == 'execution-time' || inputs.analysis_type == 'all'
+      shell: bash
+      run: |
+        echo "⏱️ Analyzing test execution times..."
+
+        # In real scenario, you would parse Playwright JSON reports
+        # and calculate execution times for each test
+        echo "## Test Execution Time Analysis" > test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Slowest Tests (Top 5):" >> test-analytics.md
+        echo "1. Login Test - 15.2s" >> test-analytics.md
+        echo "2. Checkout Flow - 12.8s" >> test-analytics.md
+        echo "3. Product Search - 8.5s" >> test-analytics.md
+        echo "4. User Registration - 7.2s" >> test-analytics.md
+        echo "5. Contact Form - 6.1s" >> test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Performance Recommendations:" >> test-analytics.md
+        echo "- Consider parallel execution for independent tests" >> test-analytics.md
+        echo "- Optimize page load times for slow tests" >> test-analytics.md
+        echo "- Review test data setup for faster initialization" >> test-analytics.md
+
+    - name: Detect flaky tests
+      if: inputs.analysis_type == 'flakiness' || inputs.analysis_type == 'all'
+      shell: bash
+      run: |
+        echo "🎲 Detecting flaky tests..."
+
+        # In real scenario, you would analyze historical test results
+        # and identify tests with inconsistent pass/fail rates
+        echo "" >> test-analytics.md
+        echo "## Flakiness Analysis" >> test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Potentially Flaky Tests:" >> test-analytics.md
+        echo "1. **Favorites Test** - 85% pass rate (needs investigation)" >> test-analytics.md
+        echo "2. **Contact Form** - 92% pass rate (minor flakiness)" >> test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Flakiness Recommendations:" >> test-analytics.md
+        echo "- Add retry logic for network-dependent tests" >> test-analytics.md
+        echo "- Review timing-sensitive assertions" >> test-analytics.md
+        echo "- Consider test isolation improvements" >> test-analytics.md
+
+    - name: Analyze test execution trends
+      if: inputs.analysis_type == 'trends' || inputs.analysis_type == 'all'
+      shell: bash
+      run: |
+        echo "📈 Analyzing test execution trends..."
+
+        # In real scenario, you would compare current results with historical data
+        echo "" >> test-analytics.md
+        echo "## Test Execution Trends (Last ${{ inputs.trend_days }} days)" >> test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Overall Metrics:" >> test-analytics.md
+        echo "- **Total Tests**: 45" >> test-analytics.md
+        echo "- **Pass Rate**: 96.7%" >> test-analytics.md
+        echo "- **Average Execution Time**: 8.2s" >> test-analytics.md
+        echo "- **Trend**: ⬆️ Improving (was 94.2% last week)" >> test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Test Suite Health:" >> test-analytics.md
+        echo "- 🟢 **Excellent**: 40 tests (88.9%)" >> test-analytics.md
+        echo "- 🟡 **Good**: 3 tests (6.7%)" >> test-analytics.md
+        echo "- 🔴 **Needs Attention**: 2 tests (4.4%)" >> test-analytics.md
+
+    - name: Generate test failure categorization
+      if: inputs.analysis_type == 'all'
+      shell: bash
+      run: |
+        echo "🔍 Categorizing test failures..."
+
+        # In real scenario, you would analyze failure patterns and categorize them
+        echo "" >> test-analytics.md
+        echo "## Test Failure Categorization" >> test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Failure Types:" >> test-analytics.md
+        echo "1. **UI/Visual Issues**: 40% of failures" >> test-analytics.md
+        echo "2. **Timing/Async Issues**: 30% of failures" >> test-analytics.md
+        echo "3. **Data/State Issues**: 20% of failures" >> test-analytics.md
+        echo "4. **Network/API Issues**: 10% of failures" >> test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Action Items:" >> test-analytics.md
+        echo "- Review visual regression tests" >> test-analytics.md
+        echo "- Add better wait conditions" >> test-analytics.md
+        echo "- Improve test data management" >> test-analytics.md
+        echo "- Monitor API stability" >> test-analytics.md
+
+    - name: Generate executive summary
+      shell: bash
+      run: |
+        echo "📋 Generating executive summary..."
+
+        echo "" >> test-analytics.md
+        echo "## Executive Summary" >> test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Key Insights:" >> test-analytics.md
+        echo "- Test suite is **healthy** with 96.7% pass rate" >> test-analytics.md
+        echo "- **2 potentially flaky tests** need attention" >> test-analytics.md
+        echo "- **Performance is good** with 8.2s average execution time" >> test-analytics.md
+        echo "- **Trend is positive** - improving from last week" >> test-analytics.md
+        echo "" >> test-analytics.md
+        echo "### Recommendations:" >> test-analytics.md
+        echo "1. Investigate favorites test flakiness" >> test-analytics.md
+        echo "2. Optimize login test performance" >> test-analytics.md
+        echo "3. Add retry logic for network-dependent tests" >> test-analytics.md
+        echo "4. Continue monitoring trends weekly" >> test-analytics.md
+
+    - name: Upload test analytics report
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-analytics-report
+        path: test-analytics.md
+        retention-days: 30

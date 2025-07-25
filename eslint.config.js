@@ -17,19 +17,19 @@ export default [
       globals: {
         window: 'readonly', // Define 'window' as a global variable
         document: 'readonly', // Define 'document' as a global variable
-        console: 'readonly', // Define 'console' as a global variable
+        console: 'readonly' // Define 'console' as a global variable
       }
     },
     plugins: {
       '@typescript-eslint': tseslint,
       prettier: prettierPlugin,
-      playwright,
+      playwright
     },
     rules: {
       ...tseslint.configs.recommended.rules,
       ...prettier.rules,
       'prettier/prettier': 'error',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn'
     }
   },
   {
