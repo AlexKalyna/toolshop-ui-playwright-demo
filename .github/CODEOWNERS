@@ -1,0 +1,41 @@
+# Global owners - these people will be the default owners for everything in the repo
+* @AlexKalyna
+
+# Testing framework and infrastructure
+/app/ @AlexKalyna
+/tests/ @AlexKalyna
+/playwright.config.ts @AlexKalyna
+/tsconfig.json @AlexKalyna
+
+# CI/CD and workflow configuration
+/.github/ @AlexKalyna
+/.github/workflows/ @AlexKalyna
+/.github/actions/ @AlexKalyna
+
+# Package and dependency management
+/package.json @AlexKalyna
+/package-lock.json @AlexKalyna
+/.eslintrc* @AlexKalyna
+/.prettierrc* @AlexKalyna
+
+# Documentation
+/README.md @AlexKalyna
+/docs/ @AlexKalyna
+/.github/BRANCH_NAMING.md @AlexKalyna
+
+# Environment and configuration
+/.env* @AlexKalyna
+/env/ @AlexKalyna
+
+# Data and fixtures
+/data/ @AlexKalyna
+/fixtures/ @AlexKalyna
+
+# Utilities and helpers
+/utils/ @AlexKalyna
+/misc/ @AlexKalyna
+
+# Branch protection and governance
+/.github/CODEOWNERS @AlexKalyna
+/.github/ISSUE_TEMPLATE/ @AlexKalyna
+/.github/pull_request_template.md @AlexKalyna
