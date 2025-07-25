@@ -1,5 +1,3 @@
-//TBD: Create readme file
-
 # Playwright Test Automation Project
 
 This project is a test automation suite using Playwright for a web application testing.
