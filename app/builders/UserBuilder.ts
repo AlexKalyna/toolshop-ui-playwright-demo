@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import type { UserCreateRequest } from '../models/api-models/models';
+import type { UserCreateRequest } from '../../models/api-models/models';
 export class UserBuilder {
   private data: UserCreateRequest = {
     first_name: faker.person.firstName(),
