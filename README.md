@@ -1,4 +1,3 @@
-//TBD: Create readme file
 
 # Playwright Test Automation Project
 

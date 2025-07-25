@@ -1,0 +1,214 @@
+name: Wait for Services
+description: Multi-layer health validation with dependency awareness and Node.js issue handling
+inputs:
+  api-url:
+    description: 'API base URL (e.g., http://localhost:8091)'
+    required: true
+  frontend-url:
+    description: 'Frontend base URL (e.g., http://localhost:4200)'
+    required: true
+  max-wait-time:
+    description: 'Maximum total wait time in seconds (default: 900 = 15 min)'
+    required: false
+    default: '900'
+runs:
+  using: "composite"
+  steps:
+    - name: Multi-layer health validation with Node.js issue handling
+      run: |
+        cd practice-software-testing
+        echo "🔍 Starting enhanced health validation with Node.js issue detection..."
+        START_TIME=$(date +%s)
+        MAX_WAIT=${{ inputs.max-wait-time }}
+        FRONTEND_REBUILD_ATTEMPTED=false
+        
+        # Function to check elapsed time
+        check_timeout() {
+          CURRENT_TIME=$(date +%s)
+          ELAPSED=$((CURRENT_TIME - START_TIME))
+          if [ $ELAPSED -gt $MAX_WAIT ]; then
+            echo "❌ Timeout: $ELAPSED seconds elapsed (max: $MAX_WAIT)"
+            exit 1
+          fi
+          echo "⏱️  Elapsed: ${ELAPSED}s / ${MAX_WAIT}s"
+        }
+        
+        # Function to check and handle frontend container issues
+        check_frontend_container() {
+          # Check if app directory exists, if not we're already in the right location
+          if [ -d "app" ]; then
+            cd app
+          fi
+          
+          # Check if frontend container is running
+          if ! docker-compose ps angular-ui | grep -q "Up"; then
+            echo "🚨 Frontend container is not running - investigating..."
+            
+            # Check for Node.js version issue
+            if docker-compose logs angular-ui 2>/dev/null | grep -q "requires a minimum Node.js version"; then
+              echo "🔍 DETECTED: Node.js version compatibility issue"
+              
+              if [ "$FRONTEND_REBUILD_ATTEMPTED" = "false" ]; then
+                echo "🔧 Attempting to rebuild frontend container with updated Node.js..."
+                
+                # Force rebuild to get latest image updates
+                echo "💡 Rebuilding container to fetch latest Node.js version..."
+                docker-compose build --no-cache angular-ui || echo "⚠️  Build warning"
+                
+                # Restart the container
+                echo "🚀 Starting rebuilt frontend container..."
+                docker-compose up -d angular-ui || echo "⚠️  Startup warning"
+                
+                FRONTEND_REBUILD_ATTEMPTED=true
+                echo "✅ Frontend container rebuild attempted"
+                
+                # Give container time to stabilize
+                sleep 30
+                return 0
+              else
+                echo "❌ Frontend rebuild already attempted, container still failing"
+                return 1
+              fi
+            else
+              echo "🔄 Frontend container failed for non-Node.js reasons, attempting restart..."
+              docker-compose restart angular-ui || echo "⚠️  Restart warning"
+              sleep 20
+              return 0
+            fi
+          else
+            return 0
+          fi
+          
+          # Return to original directory if we changed
+          if [ -d "app" ]; then
+            cd ..
+          fi
+        }
+        
+        # Layer 1: Container status
+        echo "📦 Layer 1: Checking container status..."
+        # Check if app directory exists, if not we're already in the right location
+        if [ -d "app" ]; then
+          cd app
+        fi
+        docker-compose ps || echo "⚠️  docker-compose ps failed"
+        
+        # Early frontend container check
+        check_frontend_container
+        # Return to original directory if we changed
+        if [ -d "app" ]; then
+          cd ..
+        fi
+        check_timeout
+        
+        # Layer 2: Port accessibility with frontend recovery
+        echo "🔌 Layer 2: Checking port accessibility..."
+        while ! nc -z localhost 3306 2>/dev/null; do
+          echo "⏳ Waiting for database port 3306..."
+          sleep 5
+          check_timeout
+        done
+        echo "✅ Database port accessible"
+        
+        while ! nc -z localhost 8091 2>/dev/null; do
+          echo "⏳ Waiting for API port 8091..."
+          sleep 5
+          check_timeout
+        done
+        echo "✅ API port accessible"
+        
+        # Enhanced frontend port check with recovery
+        FRONTEND_PORT_ATTEMPTS=0
+        while ! nc -z localhost 4200 2>/dev/null; do
+          FRONTEND_PORT_ATTEMPTS=$((FRONTEND_PORT_ATTEMPTS + 1))
+          echo "⏳ Waiting for frontend port 4200 (attempt $FRONTEND_PORT_ATTEMPTS)..."
+          
+          # Every 6 attempts (1 minute), check container status
+          if [ $((FRONTEND_PORT_ATTEMPTS % 12)) -eq 0 ]; then
+            echo "🔍 Frontend port not accessible after $FRONTEND_PORT_ATTEMPTS attempts, checking container..."
+            check_frontend_container
+          fi
+          
+          sleep 5
+          check_timeout
+        done
+        echo "✅ Frontend port accessible"
+        
+        # Layer 3: HTTP health checks (dependency-aware)
+        echo "🌐 Layer 3: HTTP health validation..."
+        
+        # API first (depends on database)
+        echo "⏳ Waiting for API to respond..."
+        API_ATTEMPTS=0
+        while ! curl -f -s ${{ inputs.api-url }}/brands >/dev/null 2>&1; do
+          API_ATTEMPTS=$((API_ATTEMPTS + 1))
+          echo "⏳ API not ready yet (attempt $API_ATTEMPTS)..."
+          sleep 20
+          check_timeout
+        done
+        echo "✅ API is responding"
+        
+        # Frontend second (may depend on API) with enhanced recovery
+        echo "⏳ Waiting for frontend to respond..."
+        FRONTEND_HTTP_ATTEMPTS=0
+        while ! curl -f -s -L ${{ inputs.frontend-url }}/ >/dev/null 2>&1; do
+          FRONTEND_HTTP_ATTEMPTS=$((FRONTEND_HTTP_ATTEMPTS + 1))
+          echo "⏳ Frontend not ready yet (attempt $FRONTEND_HTTP_ATTEMPTS)..."
+          
+          if [ $FRONTEND_HTTP_ATTEMPTS -eq 1 ]; then
+            echo "ℹ️  Note: Angular frontend typically takes 5-7 minutes to build and serve"
+          fi
+          
+          # Every 6 attempts, debug what frontend is returning
+          if [ $((FRONTEND_HTTP_ATTEMPTS % 6)) -eq 0 ]; then
+            echo "🔍 Debug: Checking what frontend is returning..."
+            curl -v ${{ inputs.frontend-url }}/ 2>&1 | head -20 || true
+            
+            # Also check container status
+            echo "🔍 Checking frontend container status..."
+            check_frontend_container
+          fi
+          
+          sleep 20
+          check_timeout
+        done
+        echo "✅ Frontend is responding"
+        
+        # Layer 4: Application functionality
+        echo "🧪 Layer 4: Application functionality test..."
+        
+        # Test critical endpoints
+        echo "🔍 Testing API brands endpoint..."
+        curl -f -s ${{ inputs.api-url }}/brands >/dev/null || (echo "❌ API brands endpoint failed" && exit 1)
+        echo "✅ API brands endpoint working"
+        
+        echo "🔍 Testing frontend Angular app loading..."
+        # For Angular SPA, test that the main app loads and contains Angular indicators
+        FRONTEND_CONTENT=$(curl -s -L ${{ inputs.frontend-url }}/ 2>/dev/null)
+        if echo "$FRONTEND_CONTENT" | grep -q "angular\|ng-\|Angular" || echo "$FRONTEND_CONTENT" | grep -q "main.js\|runtime.js"; then
+          echo "✅ Frontend Angular app is loading correctly"
+        else
+          echo "❌ Frontend Angular app failed to load properly"
+          echo "🔍 Frontend response sample:"
+          echo "$FRONTEND_CONTENT" | head -c 200
+          exit 1
+        fi
+        
+        echo "🔍 Testing frontend JavaScript loading..."
+        # Test that JavaScript bundles are accessible (these are needed for routing)
+        if curl -f -s -L ${{ inputs.frontend-url }}/main.js >/dev/null 2>&1; then
+          echo "✅ Frontend JavaScript bundles accessible"
+        elif curl -f -s -L ${{ inputs.frontend-url }}/runtime.js >/dev/null 2>&1; then
+          echo "✅ Frontend runtime bundle accessible"
+        else
+          echo "⚠️  JavaScript bundles test inconclusive (may be bundled differently)"
+          echo "✅ Frontend basic functionality verified"
+        fi
+        
+        TOTAL_TIME=$(($(date +%s) - START_TIME))
+        echo "🎯 All health checks passed! Total time: ${TOTAL_TIME} seconds"
+        
+        if [ "$FRONTEND_REBUILD_ATTEMPTED" = "true" ]; then
+          echo "💡 Note: Frontend container was rebuilt to resolve Node.js compatibility issues"
+        fi
+      shell: bash 

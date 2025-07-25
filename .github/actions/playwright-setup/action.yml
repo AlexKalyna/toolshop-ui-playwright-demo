@@ -1,0 +1,16 @@
+name: Setup Playwright
+description: Install NPM dependencies with cache and Playwright browsers
+inputs:
+  browsers:
+    description: 'Browsers to install (default: chromium webkit)'
+    required: false
+    default: 'chromium webkit'
+runs:
+  using: "composite"
+  steps:
+    - name: Install NPM Dependencies with Cache
+      uses: ./.github/actions/install-npm-deps-with-cache
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps ${{ inputs.browsers }}
+      shell: bash 

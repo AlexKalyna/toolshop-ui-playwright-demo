@@ -1,0 +1,13 @@
+name: Setup Practice Software Testing App
+description: Checkout the 'practice-software-testing' repository and install Docker Compose for Playwright tests
+runs:
+  using: "composite"
+  steps:
+    - name: Install Docker Compose
+      uses: ./.github/actions/install-docker-compose
+
+    - name: Checkout practice-software-testing repository
+      uses: actions/checkout@v4
+      with:
+        repository: AlexKalyna/practice-software-testing
+        path: practice-software-testing
