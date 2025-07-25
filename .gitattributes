@@ -1,0 +1,29 @@
+# GitHub specific files
+.github/CODEOWNERS linguist-documentation
+.github/ISSUE_TEMPLATE/* linguist-documentation
+.github/pull_request_template.md linguist-documentation
+.github/BRANCH_NAMING.md linguist-documentation
+.github/BRANCH_PROTECTION_GUIDE.md linguist-documentation
+
+# Documentation files
+*.md linguist-documentation
+README.md linguist-documentation
+
+# Configuration files
+*.yml linguist-generated
+*.yaml linguist-generated
+*.json linguist-generated
+*.config.js linguist-generated
+*.config.ts linguist-generated
+
+# Test files
+*.test.ts linguist-documentation
+*.spec.ts linguist-documentation
+
+# Generated files
+node_modules/ linguist-vendored
+dist/ linguist-vendored
+build/ linguist-vendored
+coverage/ linguist-vendored
+playwright-report/ linguist-vendored
+test-results/ linguist-vendored 

@@ -33,6 +33,16 @@ export default [
     }
   },
   {
-    ignores: ['node_modules', 'dist', 'build']
+    ignores: [
+      'node_modules',
+      'dist',
+      'build',
+      '.github/CODEOWNERS',
+      '.github/ISSUE_TEMPLATE/*',
+      '.github/pull_request_template.md',
+      '.github/BRANCH_NAMING.md',
+      '.github/BRANCH_PROTECTION_GUIDE.md',
+      '*.md'
+    ]
   }
 ];

@@ -1,0 +1,95 @@
+name: Branch Naming Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches-ignore:
+      - main
+      - master
+
+jobs:
+  validate-branch-name:
+    name: Validate Branch Naming Convention
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate branch naming convention
+        run: |
+          # Get the branch name
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+
+          echo "🔍 Checking branch name: $BRANCH_NAME"
+
+          # Define the pattern
+          PATTERN="^(feature|bugfix|hotfix|release)/ARC-[0-9]+--[a-z0-9-]+$"
+
+          # Check if branch matches pattern
+          if [[ $BRANCH_NAME =~ $PATTERN ]]; then
+            echo "✅ Branch name '$BRANCH_NAME' follows the naming convention"
+            echo "✅ Pattern: $PATTERN"
+          else
+            echo "❌ Branch name '$BRANCH_NAME' does not follow the naming convention"
+            echo "❌ Expected pattern: $PATTERN"
+            echo ""
+            echo "📋 Branch naming rules:"
+            echo "   - Must start with: feature/, bugfix/, hotfix/, or release/"
+            echo "   - Must include: ARC-<number>--<description>"
+            echo "   - Number must be numeric"
+            echo "   - Description must be kebab-case (lowercase with hyphens)"
+            echo ""
+            echo "✅ Examples:"
+            echo "   - feature/ARC-1901--add-branch-protection"
+            echo "   - bugfix/ARC-1902--fix-login-test"
+            echo "   - hotfix/ARC-1903--critical-security-fix"
+            echo ""
+            echo "❌ Examples:"
+            echo "   - feature/improve-workflow"
+            echo "   - ARC-1901--add-branch-protection"
+            echo "   - feature/arc-1901--add-branch-protection"
+            exit 1
+          fi
+
+      - name: Validate ARC number format
+        run: |
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+
+          # Extract ARC number
+          if [[ $BRANCH_NAME =~ ARC-([0-9]+) ]]; then
+            ARC_NUMBER="${BASH_REMATCH[1]}"
+            echo "🔢 ARC Number: $ARC_NUMBER"
+            
+            # Check if number is in valid range (1900+)
+            if [ "$ARC_NUMBER" -ge 1900 ]; then
+              echo "✅ ARC number $ARC_NUMBER is valid (>= 1900)"
+            else
+              echo "❌ ARC number $ARC_NUMBER is too low. Must be >= 1900"
+              exit 1
+            fi
+          else
+            echo "❌ Could not extract ARC number from branch name"
+            exit 1
+          fi
+
+      - name: Check for duplicate ARC numbers
+        run: |
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+
+          # Extract ARC number
+          if [[ $BRANCH_NAME =~ ARC-([0-9]+) ]]; then
+            ARC_NUMBER="${BASH_REMATCH[1]}"
+            
+            # Get all branches with this ARC number
+            DUPLICATES=$(git branch -r | grep "ARC-$ARC_NUMBER" | grep -v "$BRANCH_NAME" || true)
+            
+            if [ -n "$DUPLICATES" ]; then
+              echo "⚠️  Warning: Found other branches with ARC-$ARC_NUMBER:"
+              echo "$DUPLICATES"
+              echo ""
+              echo "💡 Consider using a different ARC number to avoid confusion"
+            else
+              echo "✅ No duplicate ARC numbers found"
+            fi
+          fi
