@@ -1,12 +1,9 @@
-import { env } from '../env';
+import { env, getBugUrls as getBugUrlsFromEnv } from '../env';
 
 // Helper to get the appropriate URLs based on test type
 export const getTestUrls = (useBugUrls: boolean = false) => {
-  if (useBugUrls && env.BUG_BASE_URL && env.BUG_API_URL) {
-    return {
-      BASE_URL: env.BUG_BASE_URL,
-      API_URL: env.BUG_API_URL
-    };
+  if (useBugUrls) {
+    return getBugUrlsFromEnv();
   }
 
   return {
