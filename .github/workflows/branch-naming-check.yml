@@ -61,11 +61,11 @@ jobs:
             ARC_NUMBER="${BASH_REMATCH[1]}"
             echo "🔢 ARC Number: $ARC_NUMBER"
             
-            # Check if number is in valid range (1900+)
-            if [ "$ARC_NUMBER" -ge 1900 ]; then
-              echo "✅ ARC number $ARC_NUMBER is valid (>= 1900)"
+            # Check if number is in valid range (0-99999)
+            if [ "$ARC_NUMBER" -ge 0 ] && [ "$ARC_NUMBER" -le 99999 ]; then
+              echo "✅ ARC number $ARC_NUMBER is valid (0-99999)"
             else
-              echo "❌ ARC number $ARC_NUMBER is too low. Must be >= 1900"
+              echo "❌ ARC number $ARC_NUMBER is out of range. Must be between 0 and 99999"
               exit 1
             fi
           else
