@@ -1,7 +1,10 @@
 import { Page } from '@playwright/test';
-import { PageFactory } from '../PageFactory';
-import { Sprint5WithBugsLogin } from './Sprint5WithBugsLogin.page';
-import { DefaultPageFactory } from '../default/DefaultPageFactory';
+import { PageFactory } from '../interfaces/PageFactory';
+import { Sprint5WithBugsLogin } from '../pages/sprint5WithBugs/Sprint5WithBugsLogin.page';
+import { Sprint5WithBugsHome } from '../pages/sprint5WithBugs/Sprint5WithBugsHome.page';
+import { Sprint5WithBugsContact } from '../pages/sprint5WithBugs/Sprint5WithBugsContact.page';
+import { Sprint5WithBugsHeader } from '../pages/sprint5WithBugs/Sprint5WithBugsHeader.page';
+import { DefaultPageFactory } from './DefaultPageFactory';
 
 export class Sprint5WithBugsPageFactory implements PageFactory {
   private defaultFactory: DefaultPageFactory;
@@ -14,13 +17,15 @@ export class Sprint5WithBugsPageFactory implements PageFactory {
     return new Sprint5WithBugsLogin(this.page);
   }
   createHomePage() {
-    return this.defaultFactory.createHomePage();
+    return new Sprint5WithBugsHome(this.page);
   }
   createProductPage() {
-    return this.defaultFactory.createProductPage();
+    // For buggy factory, we don't have an Application instance
+    // This is a demo scenario where Product page is not used
+    throw new Error('Product page not available in Sprint5WithBugs factory');
   }
   createContactPage() {
-    return this.defaultFactory.createContactPage();
+    return new Sprint5WithBugsContact(this.page);
   }
   createCategoryPage() {
     return this.defaultFactory.createCategoryPage();
@@ -29,7 +34,7 @@ export class Sprint5WithBugsPageFactory implements PageFactory {
     return this.defaultFactory.createRentalsPage();
   }
   createHeaderComponent() {
-    return this.defaultFactory.createHeaderComponent();
+    return new Sprint5WithBugsHeader(this.page);
   }
   createCheckoutPage() {
     return this.defaultFactory.createCheckoutPage();

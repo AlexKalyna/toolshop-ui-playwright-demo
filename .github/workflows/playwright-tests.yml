@@ -83,6 +83,8 @@ jobs:
       HOME: /root
       BASE_URL: ${{secrets.BASE_URL}}
       API_URL: ${{ secrets.API_URL }}
+      BUG_BASE_URL: ${{secrets.BUG_BASE_URL}}
+      BUG_API_URL: ${{secrets.BUG_API_URL}}
       ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       ADMIN_USERNAME: ${{ vars.ADMIN_USERNAME }}

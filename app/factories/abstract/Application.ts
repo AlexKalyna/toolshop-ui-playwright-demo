@@ -1,4 +1,4 @@
-import type { PageFactory } from './PageFactory';
+import type { PageFactory } from './interfaces/PageFactory';
 
 export class AbstractFactoryApplication {
   constructor(private factory: PageFactory) {}
