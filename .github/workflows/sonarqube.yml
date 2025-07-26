@@ -1,0 +1,64 @@
+name: SonarQube Analysis
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  sonarqube:
+    name: SonarQube Code Quality Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important for SonarQube analysis
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node-project
+
+      - name: Run Playwright Tests for Coverage
+        run: |
+          npx playwright test --reporter=html --reporter=junit
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          API_URL: ${{ secrets.API_URL }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
+          CUSTOMER_PASSWORD: ${{ secrets.CUSTOMER_PASSWORD }}
+
+      - name: SonarQube Scan
+        uses: sonarqube-quality-gate-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          scannerHomebrew: SonarScanner
+          args: >
+            -Dsonar.projectKey=toolshop-ui-e2e-playwright-demo
+            -Dsonar.projectName=Toolshop UI E2E Playwright Demo
+            -Dsonar.projectVersion=1.0.0
+            -Dsonar.sources=app,tests,utils,env
+            -Dsonar.tests=tests
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.testExecutionReportPaths=test-results/junit.xml
+            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.spec.ts,**/node_modules/**
+            -Dsonar.test.inclusions=**/*.test.ts,**/*.spec.ts
+            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+
+      - name: Quality Gate Check
+        uses: sonarqube-quality-gate-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          scannerHomebrew: SonarScanner
+          args: >
+            -Dsonar.projectKey=toolshop-ui-e2e-playwright-demo
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
