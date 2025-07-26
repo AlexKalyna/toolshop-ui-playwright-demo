@@ -5,6 +5,7 @@ import { Sprint5WithBugsHome } from '../pages/sprint5WithBugs/Sprint5WithBugsHom
 import { Sprint5WithBugsContact } from '../pages/sprint5WithBugs/Sprint5WithBugsContact.page';
 import { Sprint5WithBugsHeader } from '../pages/sprint5WithBugs/Sprint5WithBugsHeader.page';
 import { DefaultPageFactory } from './DefaultPageFactory';
+import { Product } from '../../../pages/product.page';
 
 export class Sprint5WithBugsPageFactory implements PageFactory {
   private defaultFactory: DefaultPageFactory;
@@ -21,8 +22,8 @@ export class Sprint5WithBugsPageFactory implements PageFactory {
   }
   createProductPage() {
     // For buggy factory, we don't have an Application instance
-    // This is a demo scenario where Product page is not used
-    throw new Error('Product page not available in Sprint5WithBugs factory');
+    // Return a mock Product that will never be used in buggy tests
+    return {} as Product;
   }
   createContactPage() {
     return new Sprint5WithBugsContact(this.page);
