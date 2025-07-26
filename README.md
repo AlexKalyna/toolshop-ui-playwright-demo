@@ -1,34 +1,45 @@
-# Playwright Test Automation Project
+# Toolshop UI E2E Playwright Demo
 
-This project is a test automation suite using Playwright for a web application testing.
+A comprehensive E2E testing project demonstrating Playwright with advanced CI/CD practices, design patterns, and code quality tools.
 
-## Introduction
+## 🚀 Features
 
-This repository is a demo project showcasing UI testing using [Playwright](https://playwright.dev/). It includes a collection of automated tests designed to interact with [Practice Software Testing - Toolshop](https://practicesoftwaretesting.com/) demo site.
+- **Playwright E2E Testing** with TypeScript
+- **Design Patterns**: Abstract Factory and Factory Method implementations
+- **CI/CD Pipeline** with GitHub Actions
+- **Code Quality Tools**: ESLint, Prettier, TypeScript, SonarQube
+- **Security Scanning** and vulnerability detection
+- **Pre-commit Hooks** for code quality enforcement
 
-## Getting Started
+## 📋 Prerequisites
 
-1. Clone this repository:
+- Node.js 18+
+- npm or yarn
+- Git
 
-```shell
-    git clone https://github.com/AlexKalyna/toolshop-ui-e2e-playwright-demo.git
+## 🛠️ Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd toolshop-ui-e2e-playwright-demo
+
+# Install dependencies
+npm install
+
+# Setup pre-commit hooks
+npm run postinstall
 ```
 
-2. Install the dependencies:
+## 🔧 Environment Setup
 
-```shell
-    npm install
+Copy `.env.example` to `.env` and update the values:
+
+```bash
+cp .env.example .env
 ```
 
-3. Install Playwright:
-
-```shell
-    npm install playwright
-```
-
-4. Create a `.env.<environment name>` files in `envs` folder of the project ( ideally by copying `.env.localhost.example` ).
-
-### Default accounts
+### Default Accounts (Open Source)
 
 | First name | Last name | Role  | E-mail                                | Password  |
 | ---------- | --------- | ----- | ------------------------------------- | --------- |
@@ -36,36 +47,105 @@ This repository is a demo project showcasing UI testing using [Playwright](https
 | Jane       | Doe       | user  | customer@practicesoftwaretesting.com  | welcome01 |
 | Jack       | Howe      | user  | customer2@practicesoftwaretesting.com | welcome01 |
 
-5. Run all UI tests in production environment:
+## 🧪 Running Tests
 
-```shell
-    npm run test
-```
+```bash
+# Run all tests (excluding buggy tests)
+npm run test
 
-6. Run all screenshot tests in production environment:
+# Run buggy tests only
+npm run test:buggy
 
-To run all screenshot tests in the production environment, use:
+# Run tests with coverage for SonarQube
+npm run test:coverage
 
-```sh
+# Run screenshot tests
 npm run test:screenshot
-```
 
-### ⚠️ Important: Updating Snapshots
-
-If this is your first time running screenshot tests or if any visual changes have been made, it is **highly recommended** to update the snapshots before executing the tests:
-
-```sh
+# Update snapshots (IMPORTANT: Run before screenshot tests)
 npm run update:snapshots
+
+# Show test report
+npm run report
 ```
 
-This ensures that the tests compare against the latest approved visuals, preventing false failures.
+## 🔍 Code Quality
 
-7. Show report:
+```bash
+# Lint code
+npm run lint
 
-```shell
-   npm run report
+# Fix linting issues
+npm run lint:fix
+
+# Check code formatting
+npm run format:check
+
+# Format code
+npm run format
+
+# Type checking
+npm run type-check
+
+# Security audit
+npm run audit
 ```
 
-## License
+## 📊 SonarQube Analysis
 
-This project is licensed under the [MIT License](/LICENCE).
+This project integrates with SonarCloud for code quality analysis (free for public repositories).
+
+### Setup SonarCloud
+
+1. Create account at [sonarcloud.io](https://sonarcloud.io)
+2. Add GitHub secrets: `SONAR_TOKEN` and `SONAR_ORGANIZATION`
+3. See `SONARQUBE_SETUP.md` for detailed instructions
+
+### Run Analysis
+
+```bash
+# For SonarCloud
+npm run sonar:cloud
+
+# For local SonarQube server
+npm run sonar:local
+```
+
+## 🎯 Design Patterns
+
+- **Abstract Factory**: `app/factories/abstract/` - Normal vs. buggy page objects
+- **Factory Method**: `app/factories/factory-method/` - Test data factories
+
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── components/          # Page components
+│   ├── factories/          # Design pattern implementations
+│   └── pages/              # Page objects
+├── tests/
+│   ├── integration/        # Integration tests
+│   ├── unit/              # Unit tests
+│   └── screenshot/        # Visual regression tests
+├── .github/
+│   ├── actions/           # Composite actions
+│   └── workflows/         # CI/CD workflows
+├── env/                   # Environment configuration
+├── utils/                 # Utility functions
+└── fixtures/              # Playwright fixtures
+```
+
+## 🤝 Contributing
+
+1. Create a feature branch: `feature/ARC-XXXX--description`
+2. Follow the coding standards enforced by ESLint and Prettier
+3. Ensure all tests pass
+4. Submit a pull request
+
+## 📝 License
+
+ISC License
+
+## 👨‍💻 Author
+
+Oleksandr Kalyna - oleksandr.kalyna.qa@gmail.com

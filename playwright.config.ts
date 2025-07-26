@@ -3,8 +3,12 @@ import { env } from './env';
 import { defineConfig, devices } from '@playwright/test';
 import process from 'node:process';
 
+/**
+ * @see https://playwright.dev/docs/test-configuration
+ */
 export default defineConfig({
   testDir: './tests',
+  /* Run tests in files in parallel */
   fullyParallel: true,
   workers: '90%',
 
@@ -12,11 +16,20 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  reporter: [['html', { open: 'never' }], ['list', { printSteps: true }], [process.env.CI ? 'blob' : 'html']],
+  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  reporter: [
+    ['html', { open: 'never' }],
+    ['list', { printSteps: true }],
+    ['junit', { outputFile: 'test-results/junit.xml' }],
+    ['json', { outputFile: 'test-results/results.json' }],
+    [process.env.CI ? 'blob' : 'html']
+  ],
 
+  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: env.BASE_URL,
     testIdAttribute: 'data-test',
+    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     actionTimeout: 0,
     ignoreHTTPSErrors: true,
@@ -25,6 +38,7 @@ export default defineConfig({
     headless: process.env.CI ? true : true
   },
 
+  /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',

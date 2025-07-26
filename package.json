@@ -6,6 +6,7 @@
   "scripts": {
     "test": "npx playwright test --grep-invert @buggy",
     "test:buggy": "npx playwright test --grep @buggy",
+    "test:coverage": "npx playwright test --reporter=html --reporter=junit --reporter=lcov",
     "report": "npx playwright show-report",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -15,6 +16,8 @@
     "audit": "npm audit --audit-level=high",
     "test:screenshot": "npx playwright test --project=screenshot-tests",
     "update:snapshots": "npx playwright test --project=screenshot-tests --update-snapshots",
+    "sonar:local": "sonar-scanner -Dsonar.host.url=http://localhost:9000",
+    "sonar:cloud": "sonar-scanner",
     "postinstall": "husky install"
   },
   "lint-staged": {
