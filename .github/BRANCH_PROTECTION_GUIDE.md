@@ -25,49 +25,45 @@ This guide provides step-by-step instructions for setting up branch protection r
 
 ### Protection Options
 
+#### ✅ Branch Rules (All Required)
+
+- ✅ **Restrict creations** - Only allow users with bypass permission to create matching refs
+- ✅ **Restrict updates** - Only allow users with bypass permission to update matching refs
+- ✅ **Restrict deletions** - Only allow users with bypass permissions to delete matching refs
+- ✅ **Require linear history** - Prevent merge commits from being pushed to matching refs
+- ✅ **Block force pushes** - Prevent users with push access from force pushing to refs
+
 #### ✅ Require a pull request before merging
 
-- ✅ **Require pull request reviews before merging**
-- ✅ **Required approving reviews**: `1` (minimum)
-- ✅ **Dismiss stale PR approvals when new commits are pushed**
-- ✅ **Require review from code owners**
+- ✅ **Require a pull request before merging** - Require all commits be made to a non-target branch and submitted via a pull request before they can be merged
+- ✅ **Additional settings:**
+  - ✅ **Require pull request reviews before merging**
+  - ✅ **Required approving reviews**: `1` (minimum)
+  - ✅ **Dismiss stale PR approvals when new commits are pushed**
+  - ✅ **Require review from code owners**
 
 #### ✅ Require status checks to pass before merging
 
+- ✅ **Require status checks to pass** - Choose which status checks must pass before the ref is updated
 - ✅ **Require branches to be up to date before merging**
 - ✅ **Status checks that are required:**
-  - `eslint-check` ✅
-  - `format-check` ✅
-  - `security-audit` ✅
-  - `security-scan` ✅
-  - `type-check` ✅
-  - `build` ✅
-  - `playwright-tests` ✅
-  - `validate-branch-name` ✅
+  - `eslint-check` ✅ (GitHub Actions)
+  - `playwright-tests` ✅ (GitHub Actions)
+  - `validate-branch-name` ✅ (Any source)
+  - `Build Project (Demo)` ✅ (GitHub Actions)
+  - `Check Code Formatting` ✅ (GitHub Actions)
+  - `Type Check` ✅ (GitHub Actions)
+  - `Comprehensive Security Scan` ✅ (GitHub Actions)
+  - `Security Audit` ✅ (GitHub Actions)
 
-#### ✅ Require conversation resolution before merging
+#### ✅ Security Features
 
-- ✅ **Require conversation resolution before merging**
+- ✅ **Require signed commits** - Commits pushed to matching refs must have verified signatures
 
-#### ✅ Require signed commits (Optional)
+#### ❌ Optional Features (Not Enabled)
 
-- ✅ **Require signed commits** (recommended for security)
-
-#### ✅ Require linear history
-
-- ✅ **Require linear history** (prevents merge commits)
-
-#### ✅ Require deployments to succeed before merging
-
-- ✅ **Require deployments to succeed before merging** (optional)
-
-#### ❌ Lock branch
-
-- ❌ **Do NOT lock branch** (you need to be able to push to main for deployments)
-
-#### ✅ Do not allow bypassing the above settings
-
-- ✅ **Do not allow bypassing the above settings** (prevents admin override)
+- ❌ **Require deployments to succeed** - Not enabled (optional for testing projects)
+- ❌ **Require code scanning results** - Not enabled (optional for testing projects)
 
 ## Step 3: Branch Naming Enforcement
 
@@ -117,6 +113,12 @@ The `.github/dependabot.yml` file is already configured for:
 - **Code owner review**: Required
 - **Stale approval dismissal**: Enabled
 - **Conversation resolution**: Required
+
+### Bypass Permissions
+
+- **Restrict creations/updates/deletions**: These options give repository owners bypass permissions
+- **Solo project workflow**: You can create/update/delete branches and merge your own PRs
+- **Future team collaboration**: Remove yourself from bypass list when adding team members
 
 ### Review Guidelines
 

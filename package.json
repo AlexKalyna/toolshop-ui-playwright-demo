@@ -4,7 +4,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test",
+    "test": "npx playwright test --grep-invert @buggy",
+    "test:buggy": "npx playwright test --grep @buggy",
     "report": "npx playwright show-report",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
