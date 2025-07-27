@@ -10,6 +10,7 @@ A comprehensive E2E testing project demonstrating Playwright with advanced CI/CD
 - **Code Quality Tools**: ESLint, Prettier, TypeScript, SonarQube
 - **Security Scanning** and vulnerability detection
 - **Pre-commit Hooks** for code quality enforcement
+- **Code Review Tools** with analytics and guidelines
 
 ## 📋 Prerequisites
 
@@ -96,13 +97,11 @@ npm run audit
 This project integrates with SonarCloud for code quality analysis (free for public repositories).
 
 ### Setup SonarCloud
-
 1. Create account at [sonarcloud.io](https://sonarcloud.io)
 2. Add GitHub secrets: `SONAR_TOKEN` and `SONAR_ORGANIZATION`
 3. See `SONARQUBE_SETUP.md` for detailed instructions
 
 ### Run Analysis
-
 ```bash
 # For SonarCloud
 npm run sonar:cloud
@@ -110,6 +109,42 @@ npm run sonar:cloud
 # For local SonarQube server
 npm run sonar:local
 ```
+
+## 🔍 Code Review Tools
+
+This project includes comprehensive code review tools and guidelines for maintaining high code quality.
+
+### Review Guidelines
+- **Comprehensive Guidelines**: See [Code Review Guidelines](/.github/CODE_REVIEW_GUIDELINES.md)
+- **Review Templates**: Enhanced PR templates with analytics
+- **Review Process**: Structured 3-phase review process
+
+### Local Review Tools
+```bash
+# Check for TODO comments
+npm run review:todo
+
+# Analyze code complexity
+npm run review:complexity
+
+# Scan for potential secrets
+npm run review:secrets
+
+# Generate review analytics
+npm run review:analytics
+```
+
+### Automated Review Features
+- **Review Analytics**: Automatic PR analysis and metrics
+- **Complexity Assessment**: Code complexity and review time estimation
+- **Security Scanning**: Automated sensitive data detection
+- **Quality Gates**: Automated quality enforcement
+
+### Review Process
+1. **Self-Review**: Use local tools before submitting PR
+2. **Automated Checks**: CI/CD runs comprehensive analysis
+3. **Peer Review**: Follow structured review guidelines
+4. **Quality Gates**: All checks must pass before merge
 
 ## 🎯 Design Patterns
 
@@ -139,8 +174,9 @@ npm run sonar:local
 
 1. Create a feature branch: `feature/ARC-XXXX--description`
 2. Follow the coding standards enforced by ESLint and Prettier
-3. Ensure all tests pass
-4. Submit a pull request
+3. Use local review tools: `npm run review:*`
+4. Ensure all tests pass
+5. Submit a pull request following the review guidelines
 
 ## 📝 License
 
