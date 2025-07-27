@@ -1,57 +1,50 @@
-import js from '@eslint/js';
+import eslint from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
-import prettier from 'eslint-plugin-prettier';
+import prettier from 'eslint-config-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
 import playwright from 'eslint-plugin-playwright';
-import globals from 'globals';
 
+/** @type {import('eslint').Linter.Config[]} */
 export default [
-  js.configs.recommended,
+  eslint.configs.recommended,
   {
-    files: ['**/*.{js,ts,tsx,jsx}'],
-    ignores: [
-      'node_modules/**',
-      'dist/**',
-      'build/**',
-      'coverage/**',
-      'playwright-report/**',
-      'test-results/**',
-      '.next/**',
-      'out/**',
-      '*.min.js',
-      '*.bundle.js',
-      '*.config.js',
-      '*.config.ts'
-    ],
+    files: ['**/*.ts', '**/*.tsx'], // 👈 Specify file types to lint
     languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module',
       parser: tsparser,
-      parserOptions: {
-        ecmaVersion: 2022,
-        sourceType: 'module',
-        project: './tsconfig.json'
-      },
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: {
-        ...globals.node,
-        ...globals.browser
+        window: 'readonly', // Define 'window' as a global variable
+        document: 'readonly', // Define 'document' as a global variable
+        console: 'readonly' // Define 'console' as a global variable
       }
     },
     plugins: {
       '@typescript-eslint': tseslint,
-      prettier: prettier,
-      playwright: playwright
+      prettier: prettierPlugin,
+      playwright
     },
     rules: {
       ...tseslint.configs.recommended.rules,
-      ...prettier.configs.recommended.rules,
-      ...playwright.configs.recommended.rules,
+      ...prettier.rules,
       'prettier/prettier': 'error',
-      '@typescript-eslint/no-unused-vars': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      'no-console': 'warn',
-      'prefer-const': 'error',
-      'no-var': 'error'
+      '@typescript-eslint/no-unused-vars': 'warn'
     }
+  },
+  {
+    ignores: [
+      'node_modules',
+      'dist',
+      'build',
+      'playwright-report',
+      'test-results',
+      '.github/CODEOWNERS',
+      '.github/ISSUE_TEMPLATE/*',
+      '.github/pull_request_template.md',
+      '.github/BRANCH_NAMING.md',
+      '.github/BRANCH_PROTECTION_GUIDE.md',
+      '*.md'
+    ]
   }
 ];

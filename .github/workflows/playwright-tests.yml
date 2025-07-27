@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Dependencies
-        uses: ./.github/actions/setup-node-project
+        uses: ./.github/actions/setup-node-project/
       - name: Run ESLint (Code Quality)
         run: npm run lint
 
@@ -23,7 +23,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Dependencies
-        uses: ./.github/actions/setup-node-project
+        uses: ./.github/actions/setup-node-project/
       - name: Run Prettier (Formatting Check)
         run: npm run format:check
 
@@ -35,9 +35,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Dependencies
-        uses: ./.github/actions/setup-node-project
+        uses: ./.github/actions/setup-node-project/
       - name: Run Security Scan & Review Analytics
-        uses: ./.github/actions/security-scan
+        uses: ./.github/actions/security-scan/
         with:
           scan_type: 'all'
           severity_threshold: 'MEDIUM'
@@ -51,7 +51,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Dependencies
-        uses: ./.github/actions/setup-node-project
+        uses: ./.github/actions/setup-node-project/
       - name: Run TypeScript Type Check
         run: npm run type-check
 
@@ -62,7 +62,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Dependencies
-        uses: ./.github/actions/setup-node-project
+        uses: ./.github/actions/setup-node-project/
       - name: Build Project (Demo)
         run: echo 'No build needed (demo only)'
 
@@ -95,7 +95,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Dependencies
-        uses: ./.github/actions/setup-node-project
+        uses: ./.github/actions/setup-node-project/
 
       - name: Update Visual Snapshots
         run: npm run update:snapshots
@@ -122,7 +122,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Dependencies
-        uses: ./.github/actions/setup-node-project
+        uses: ./.github/actions/setup-node-project/
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -152,7 +152,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Dependencies
-        uses: ./.github/actions/setup-node-project
+        uses: ./.github/actions/setup-node-project/
       - name: Download Test Results
         uses: actions/download-artifact@v4
         with:
@@ -160,7 +160,7 @@ jobs:
           pattern: blob-report-*
           merge-multiple: true
       - name: Run Test Analytics
-        uses: ./.github/actions/test-analytics
+        uses: ./.github/actions/test-analytics/
         with:
           test_results_path: 'all-blob-reports'
           analysis_type: 'all'
@@ -175,7 +175,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Deploy to Development Environment
-        uses: ./.github/actions/deploy
+        uses: ./.github/actions/deploy/
         with:
           environment: 'dev'
           deployment_strategy: 'rolling'
@@ -192,7 +192,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Deploy to Staging Environment
-        uses: ./.github/actions/deploy
+        uses: ./.github/actions/deploy/
         with:
           environment: 'staging'
           deployment_strategy: 'blue-green'
@@ -209,7 +209,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Deploy to Production Environment
-        uses: ./.github/actions/deploy
+        uses: ./.github/actions/deploy/
         with:
           environment: 'prod'
           deployment_strategy: 'canary'
@@ -227,7 +227,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Send Failure Notification
-        uses: ./.github/actions/notify-teams
+        uses: ./.github/actions/notify-teams/
         with:
           webhook_url: ${{ secrets.TEAMS_WEBHOOK_URL }}
           title: '🚨 Playwright E2E Tests Failed'
@@ -245,7 +245,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Send Success Notification
-        uses: ./.github/actions/notify-teams
+        uses: ./.github/actions/notify-teams/
         with:
           webhook_url: ${{ secrets.TEAMS_WEBHOOK_URL }}
           title: '✅ Playwright E2E Tests Passed'

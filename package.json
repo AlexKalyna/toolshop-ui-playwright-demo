@@ -18,10 +18,6 @@
     "update:snapshots": "npx playwright test --project=screenshot-tests --update-snapshots",
     "sonar:local": "sonar-scanner -Dsonar.host.url=http://localhost:9000",
     "sonar:cloud": "sonar-scanner",
-    "review:todo": "grep -r 'TODO\\|FIXME\\|HACK' . --exclude-dir=node_modules --exclude-dir=.git || echo 'No TODO comments found'",
-    "review:complexity": "find . -name '*.ts' -not -path './node_modules/*' -not -path './dist/*' -exec wc -l {} + | sort -nr | head -10",
-    "review:secrets": "grep -r -i 'password\\|api_key\\|secret\\|token' . --exclude-dir=node_modules --exclude-dir=.git --exclude='*.md' || echo 'No obvious secrets found'",
-    "review:analytics": "echo 'Review analytics would be generated during CI/CD'",
     "postinstall": "husky install"
   },
   "lint-staged": {
