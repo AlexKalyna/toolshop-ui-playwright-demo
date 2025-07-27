@@ -30,12 +30,14 @@ A clear and concise description of what this PR does and why it's needed.
 ## 📊 Review Analytics
 
 ### Change Summary
+
 - **Files Changed**: `${{ github.event.pull_request.changed_files }}`
 - **Lines Added**: `${{ github.event.pull_request.additions }}`
 - **Lines Deleted**: `${{ github.event.pull_request.deletions }}`
 - **Review Complexity**: [Low/Medium/High based on changes]
 
 ### Review Focus Areas
+
 - [ ] **Code Quality**: ESLint, Prettier, TypeScript compliance
 - [ ] **Security**: No vulnerabilities, proper input validation
 - [ ] **Performance**: Efficient algorithms, no memory leaks
@@ -43,6 +45,7 @@ A clear and concise description of what this PR does and why it's needed.
 - [ ] **Documentation**: Updated docs, clear comments
 
 ### Review Checklist
+
 - [ ] **Self-Review**: I have reviewed my own code
 - [ ] **Style Guidelines**: Code follows project style
 - [ ] **Comments**: Complex logic is well-commented
@@ -54,6 +57,7 @@ A clear and concise description of what this PR does and why it's needed.
 ## 🔍 Code Review Guidelines
 
 ### For Reviewers
+
 Please review according to our [Code Review Guidelines](/.github/CODE_REVIEW_GUIDELINES.md):
 
 - **Code Quality**: Style, naming, comments
@@ -64,6 +68,7 @@ Please review according to our [Code Review Guidelines](/.github/CODE_REVIEW_GUI
 - **Architecture**: Design patterns, modularity, dependencies
 
 ### Review Comments Format
+
 ```markdown
 **Issue**: [Brief description]
 **Location**: [File:line]

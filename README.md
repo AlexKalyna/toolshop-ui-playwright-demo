@@ -97,11 +97,13 @@ npm run audit
 This project integrates with SonarCloud for code quality analysis (free for public repositories).
 
 ### Setup SonarCloud
+
 1. Create account at [sonarcloud.io](https://sonarcloud.io)
 2. Add GitHub secrets: `SONAR_TOKEN` and `SONAR_ORGANIZATION`
 3. See `SONARQUBE_SETUP.md` for detailed instructions
 
 ### Run Analysis
+
 ```bash
 # For SonarCloud
 npm run sonar:cloud
@@ -115,11 +117,13 @@ npm run sonar:local
 This project includes comprehensive code review tools and guidelines for maintaining high code quality.
 
 ### Review Guidelines
+
 - **Comprehensive Guidelines**: See [Code Review Guidelines](/.github/CODE_REVIEW_GUIDELINES.md)
 - **Review Templates**: Enhanced PR templates with analytics
 - **Review Process**: Structured 3-phase review process
 
 ### Local Review Tools
+
 ```bash
 # Check for TODO comments
 npm run review:todo
@@ -135,12 +139,14 @@ npm run review:analytics
 ```
 
 ### Automated Review Features
+
 - **Review Analytics**: Automatic PR analysis and metrics
 - **Complexity Assessment**: Code complexity and review time estimation
 - **Security Scanning**: Automated sensitive data detection
 - **Quality Gates**: Automated quality enforcement
 
 ### Review Process
+
 1. **Self-Review**: Use local tools before submitting PR
 2. **Automated Checks**: CI/CD runs comprehensive analysis
 3. **Peer Review**: Follow structured review guidelines
