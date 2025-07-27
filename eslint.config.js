@@ -37,6 +37,8 @@ export default [
       'node_modules',
       'dist',
       'build',
+      'playwright-report',
+      'test-results',
       '.github/CODEOWNERS',
       '.github/ISSUE_TEMPLATE/*',
       '.github/pull_request_template.md',

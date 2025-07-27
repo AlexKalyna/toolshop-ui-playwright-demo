@@ -27,16 +27,54 @@ A clear and concise description of what this PR does and why it's needed.
 - **New Tests**: [Description of new tests added]
 - **Test Scenarios**: [Key scenarios covered]
 
-## Checklist
+## 📊 Review Analytics
 
-- [ ] My code follows the project's style guidelines
-- [ ] I have performed a self-review of my own code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and published
+### Change Summary
+
+- **Files Changed**: `${{ github.event.pull_request.changed_files }}`
+- **Lines Added**: `${{ github.event.pull_request.additions }}`
+- **Lines Deleted**: `${{ github.event.pull_request.deletions }}`
+- **Review Complexity**: [Low/Medium/High based on changes]
+
+### Review Focus Areas
+
+- [ ] **Code Quality**: ESLint, Prettier, TypeScript compliance
+- [ ] **Security**: No vulnerabilities, proper input validation
+- [ ] **Performance**: Efficient algorithms, no memory leaks
+- [ ] **Testing**: Adequate coverage, meaningful tests
+- [ ] **Documentation**: Updated docs, clear comments
+
+### Review Checklist
+
+- [ ] **Self-Review**: I have reviewed my own code
+- [ ] **Style Guidelines**: Code follows project style
+- [ ] **Comments**: Complex logic is well-commented
+- [ ] **Documentation**: Updated relevant documentation
+- [ ] **No Warnings**: Changes generate no new warnings
+- [ ] **Test Coverage**: Added tests for new functionality
+- [ ] **Dependencies**: Any dependent changes are ready
+
+## 🔍 Code Review Guidelines
+
+### For Reviewers
+
+Please review according to our [Code Review Guidelines](/.github/CODE_REVIEW_GUIDELINES.md):
+
+- **Code Quality**: Style, naming, comments
+- **Functionality**: Requirements, edge cases, error handling
+- **Testing**: Coverage, quality, scenarios
+- **Security**: Input validation, authentication, data exposure
+- **Performance**: Efficiency, memory usage, async operations
+- **Architecture**: Design patterns, modularity, dependencies
+
+### Review Comments Format
+
+```markdown
+**Issue**: [Brief description]
+**Location**: [File:line]
+**Impact**: [Why this matters]
+**Suggestion**: [How to fix/improve]
+```
 
 ## Screenshots/Videos
 

@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0 # Important for SonarQube analysis
 
       - name: Setup Node.js
-        uses: ./.github/actions/setup-node-project
+        uses: ./.github/actions/setup-node-project/
 
       - name: Run Playwright Tests for Coverage
         run: |
