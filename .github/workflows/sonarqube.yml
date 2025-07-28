@@ -41,10 +41,11 @@ jobs:
             -Dsonar.projectName=Toolshop UI E2E Playwright Demo
             -Dsonar.projectVersion=1.0.0
             -Dsonar.sources=app,tests,utils,env
+            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/.github/**,**/playwright-report/**,**/test-results/**,**/bad-code-examples/**,**/*.md,**/*.json,**/*.yml,**/*.yaml
             -Dsonar.tests=tests
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.testExecutionReportPaths=test-results/junit.xml
-            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.spec.ts,**/node_modules/**
+            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.spec.ts,**/node_modules/**,**/bad-code-examples/**
             -Dsonar.test.inclusions=**/*.test.ts,**/*.spec.ts
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.sourceEncoding=UTF-8
