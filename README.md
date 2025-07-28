@@ -157,6 +157,19 @@ npm run review:analytics
 - **Abstract Factory**: `app/factories/abstract/` - Normal vs. buggy page objects
 - **Factory Method**: `app/factories/factory-method/` - Test data factories
 
+## 🚨 Anti-Pattern Examples
+
+Educational examples of common anti-patterns in test automation and their fixes:
+
+- **Spaghetti Code**: `bad-code-examples/spaghetti-code/` - Unstructured, hard-to-follow code
+- **God Object**: `bad-code-examples/god-object/` - Classes with too many responsibilities
+- **Big Ball of Mud**: `bad-code-examples/big-ball-of-mud/` - System with no clear structure
+- **Magic Strings**: `bad-code-examples/magic-strings/` - Hardcoded strings without constants
+- **Magic Numbers**: `bad-code-examples/magic-numbers/` - Hardcoded numbers without explanation
+- **Copy-Paste Programming**: `bad-code-examples/copy-paste-programming/` - Duplicated code
+
+Each anti-pattern includes references to where it's properly implemented in the main project.
+
 ## 📁 Project Structure
 
 ```
@@ -168,6 +181,7 @@ npm run review:analytics
 │   ├── integration/        # Integration tests
 │   ├── unit/              # Unit tests
 │   └── screenshot/        # Visual regression tests
+├── bad-code-examples/     # Anti-pattern examples (educational)
 ├── .github/
 │   ├── actions/           # Composite actions
 │   └── workflows/         # CI/CD workflows
