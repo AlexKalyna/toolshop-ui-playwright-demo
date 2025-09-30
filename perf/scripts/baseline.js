@@ -4,8 +4,18 @@ import { get, post } from '../lib/http.js';
 import { checkOkJson, checkMessage } from '../lib/checks.js';
 
 export const options = {
-  vus: 1,
-  duration: '1m',
+  scenarios: {
+    baseline: {
+      executor: 'ramping-vus',
+      startVUs: 1,
+      stages: [
+        { duration: '2m', target: 5 },
+        { duration: '3m', target: 10 },
+        { duration: '2m', target: 1 }
+      ],
+      tags: { scenario: 'baseline' }
+    }
+  },
   thresholds: {
     http_req_failed: ['rate==0'],
     http_req_duration: ['p(95)<800'],
@@ -18,8 +28,7 @@ export const options = {
 export default function () {
   const env = getEnv();
 
-  // Login
-  const loginTags = { endpoint: 'login', scenario: 'smoke' };
+  const loginTags = { endpoint: 'login', scenario: 'baseline' };
   const loginRes = post(
     `${env.API_URL}users/login`,
     {
@@ -38,15 +47,13 @@ export default function () {
     // ignore parse errors; checks will fail accordingly
   }
 
-  // Products
   if (!loginOk) return;
-  const productsTags = { endpoint: 'products', scenario: 'smoke' };
+  const productsTags = { endpoint: 'products', scenario: 'baseline' };
   const productsRes = get(`${env.API_URL}products`, { tags: productsTags }, token);
   const productsOk = checkOkJson(productsRes, 200, productsTags);
 
-  // Payment check
   if (!productsOk) return;
-  const paymentTags = { endpoint: 'payment_check', scenario: 'smoke' };
+  const paymentTags = { endpoint: 'payment_check', scenario: 'baseline' };
   const paymentRes = post(
     `${env.API_URL}payment/check`,
     {
