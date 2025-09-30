@@ -40,6 +40,13 @@ Copy `.env.example` to `.env` and update the values:
 cp .env.example .env
 ```
 
+For local Docker setup, set the following URLs in your `.env`:
+
+```bash
+BASE_URL=http://localhost:4200/
+API_URL=http://localhost:8091/
+```
+
 ### Default Accounts (Open Source)
 
 | First name | Last name | Role  | E-mail                                | Password  |
