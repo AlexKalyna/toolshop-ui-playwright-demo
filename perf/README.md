@@ -38,6 +38,41 @@ Optional baseline scenario:
 k6 run perf/scripts/baseline.js
 ```
 
+Other realistic scenarios:
+
+```bash
+# Anonymous browse mix
+k6 run perf/scripts/browse.js
+
+# Authenticated quick purchase
+k6 run perf/scripts/quick-purchase.js
+
+# New user onboarding + explore
+k6 run perf/scripts/onboarding.js
+```
+
+### NPM scripts
+
+Convenience commands (use project defaults for BASE_URL and API_URL):
+
+```bash
+# Short runs (stability checks)
+npm run perf:browse:short
+npm run perf:quick:short
+
+# Full runs
+npm run perf:browse
+npm run perf:quick
+
+# All
+npm run perf:all:short
+npm run perf:all
+```
+
+### Note on onboarding
+
+The local API currently doesn’t support the registration flow used in `onboarding.js`, and login behavior within this scenario is inconsistent. We’ve deferred onboarding locally. Use the `browse` and `quick-purchase` scenarios for reliable runs.
+
 ## Structure
 
 - scripts/ – entrypoint scripts defining scenarios
