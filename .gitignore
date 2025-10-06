@@ -7,3 +7,4 @@ node_modules/
 .auth/
 .DS_Store
 .cursor/
+perf/.perf.env
