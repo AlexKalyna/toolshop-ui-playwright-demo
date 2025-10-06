@@ -18,7 +18,13 @@
     "update:snapshots": "npx playwright test --project=screenshot-tests --update-snapshots",
     "sonar:local": "sonar-scanner -Dsonar.host.url=http://localhost:9000",
     "sonar:cloud": "sonar-scanner",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "perf:browse:short": "SHORT_RUN=1 k6 run perf/scripts/browse.js",
+    "perf:browse": "k6 run perf/scripts/browse.js",
+    "perf:quick:short": "SHORT_RUN=1 k6 run perf/scripts/quick-purchase.js",
+    "perf:quick": "k6 run perf/scripts/quick-purchase.js",
+    "perf:all:short": "npm run perf:browse:short && npm run perf:quick:short",
+    "perf:all": "npm run perf:browse && npm run perf:quick"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx,json,md,yml,yaml}": [
