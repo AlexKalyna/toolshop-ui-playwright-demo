@@ -24,11 +24,10 @@ runs:
   using: composite
   steps:
     - name: Send Teams Notification
-      uses: romeovs/lnotify@v0.2.0
-      with:
-        webhook_url: ${{ inputs.webhook_url }}
-        template: |
-          {
+      shell: bash
+      run: |
+        curl -H "Content-Type: application/json" \
+          -d '{
             "@type": "MessageCard",
             "@context": "http://schema.org/extensions",
             "themeColor": "${{ inputs.theme_color }}",
@@ -64,4 +63,5 @@ runs:
                 }
               ]
             }]
-          }
+          }' \
+          "${{ inputs.webhook_url }}"
