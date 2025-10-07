@@ -11,7 +11,7 @@ import { API } from '../api';
 import { Favorites } from './pages/user/favorites.page';
 import { Profile } from './pages/user/profile.page';
 import { Base } from './components/base.components';
-import { Dashboard } from './pages/admin/dasboard.page';
+import { Dashboard } from './pages/admin/dashboard.page';
 
 export class Application extends PageHolder {
   public login = new Login(this.page);
@@ -36,9 +36,13 @@ export class Application extends PageHolder {
         throw new Error('No access token received');
       }
       await this.setTokenToLocalStorage(token);
-      console.log('Token set to local storage successfully');
+      // Token stored in local storage
     } catch (error) {
-      console.error('Error during headless login:', error);
+      // Log error for debugging purposes in test environment
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error during headless login:', error);
+      }
+      throw error; // Re-throw to maintain error handling
     }
   }
 

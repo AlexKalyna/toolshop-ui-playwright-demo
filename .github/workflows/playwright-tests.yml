@@ -69,6 +69,8 @@ jobs:
   playwright-tests:
     name: Run Playwright Tests (Sharded)
     needs: [eslint-check, format-check, security-scan, type-check, build]
+    # Skip Playwright tests for Dependabot PRs (no access to secrets)
+    if: ${{ github.actor != 'dependabot[bot]' }}
     env:
       HOME: /root
       BASE_URL: ${{secrets.BASE_URL}}
@@ -85,7 +87,7 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.54.1-jammy
+      image: mcr.microsoft.com/playwright:v1.56.0-noble
     strategy:
       fail-fast: false
       matrix:
@@ -114,7 +116,7 @@ jobs:
   merge-reports:
     name: Merge and Publish Test Report
     # Merge reports after playwright-tests, even if some shards have failed
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && github.actor != 'dependabot[bot]' }}
     needs: [playwright-tests]
 
     runs-on: ubuntu-latest
@@ -134,8 +136,28 @@ jobs:
           path: all-blob-reports
           pattern: blob-report-*
           merge-multiple: true
+        continue-on-error: true
+
+      - name: Check if reports exist
+        run: |
+          if [ ! -d "./all-blob-reports" ] || [ -z "$(ls -A ./all-blob-reports 2>/dev/null)" ]; then
+            echo "No blob reports found, creating empty directory"
+            mkdir -p ./all-blob-reports
+            echo "No test results to merge" > ./all-blob-reports/no-results.txt
+          else
+            echo "Found blob reports:"
+            ls -la ./all-blob-reports
+          fi
+
       - name: Merge Results into HTML Report
-        run: npx playwright merge-reports --reporter html ./all-blob-reports
+        run: |
+          if [ -f "./all-blob-reports/no-results.txt" ]; then
+            echo "No test results to merge, creating empty report"
+            mkdir -p playwright-report
+            echo "<html><body><h1>No test results available</h1></body></html>" > playwright-report/index.html
+          else
+            npx playwright merge-reports --reporter html ./all-blob-reports
+          fi
 
       - name: Upload HTML Test Report
         uses: actions/upload-artifact@v4
@@ -147,6 +169,7 @@ jobs:
   test-analytics:
     name: Test Analytics & Reporting
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     needs: [merge-reports]
     steps:
       - name: Checkout code
@@ -220,8 +243,8 @@ jobs:
   notify-failure:
     name: Notify Teams on Failure
     runs-on: ubuntu-latest
-    if: failure()
-    needs: [merge-reports, test-analytics, deploy-dev, deploy-staging, deploy-production]
+    if: ${{ failure() && github.actor != 'dependabot[bot]' }}
+    needs: [merge-reports, test-analytics]
     continue-on-error: true
     steps:
       - name: Checkout code
@@ -238,8 +261,8 @@ jobs:
   notify-success:
     name: Notify Teams on Success
     runs-on: ubuntu-latest
-    if: success()
-    needs: [merge-reports, test-analytics, deploy-dev, deploy-staging, deploy-production]
+    if: ${{ success() && github.actor != 'dependabot[bot]' }}
+    needs: [merge-reports, test-analytics]
     continue-on-error: true
     steps:
       - name: Checkout code

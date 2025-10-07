@@ -17,7 +17,8 @@ export default [
       globals: {
         window: 'readonly', // Define 'window' as a global variable
         document: 'readonly', // Define 'document' as a global variable
-        console: 'readonly' // Define 'console' as a global variable
+        console: 'readonly', // Define 'console' as a global variable
+        process: 'readonly' // Define 'process' as a global variable for Node.js
       }
     },
     plugins: {
@@ -39,7 +40,7 @@ export default [
       'build',
       'playwright-report',
       'test-results',
-      'bad-code-examples',
+      'docs/bad-code-examples',
       '.github/CODEOWNERS',
       '.github/ISSUE_TEMPLATE/*',
       '.github/pull_request_template.md',

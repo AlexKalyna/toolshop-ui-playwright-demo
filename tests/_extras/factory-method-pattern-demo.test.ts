@@ -31,10 +31,7 @@ test.describe('Factory Method Pattern Demo', () => {
     expect(contactData).toHaveProperty('subject');
     expect(contactData).toHaveProperty('createdAt');
 
-    console.log('✅ Factory Method Pattern Demo - All test data created successfully');
-    console.log('User Data:', userData);
-    console.log('Product Data:', productData);
-    console.log('Contact Data:', contactData);
+    // Data available for assertions if needed
   });
 
   test('should create specific types of test data', () => {
@@ -52,10 +49,7 @@ test.describe('Factory Method Pattern Demo', () => {
     expect(handTool.name).toBe('Professional Hammer');
     expect(supportRequest.subject).toBe('Support');
 
-    console.log('✅ Specific test data created successfully');
-    console.log('Admin User:', adminUser);
-    console.log('Hand Tool:', handTool);
-    console.log('Support Request:', supportRequest);
+    // Data available for assertions if needed
   });
 
   test('should demonstrate polymorphic behavior', () => {
@@ -71,7 +65,6 @@ test.describe('Factory Method Pattern Demo', () => {
       expect(data).toHaveProperty('createdAt');
     });
 
-    console.log('✅ Polymorphic behavior demonstrated');
-    console.log('Test Data Array:', testDataArray);
+    // Data available for assertions if needed
   });
 });

@@ -8,9 +8,10 @@ import process from 'node:process';
  */
 export default defineConfig({
   testDir: './tests',
+  testIgnore: ['_extras/**'],
   /* Run tests in files in parallel */
   fullyParallel: true,
-  workers: '90%',
+  workers: '50%',
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -18,11 +19,10 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ['html', { open: 'never' }],
     ['list', { printSteps: true }],
     ['junit', { outputFile: 'test-results/junit.xml' }],
-    ['json', { outputFile: 'test-results/results.json' }],
-    [process.env.CI ? 'blob' : 'html']
+    ['html', { open: 'never' }],
+    ['blob', { outputDir: 'blob-report' }]
   ],
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npx playwright test --grep-invert @buggy",
     "test:buggy": "npx playwright test --grep @buggy",
-    "test:coverage": "npx playwright test --reporter=html --reporter=junit --reporter=lcov",
+    "test:coverage": "npx playwright test --reporter=html --reporter=junit",
     "report": "npx playwright show-report",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -18,7 +18,13 @@
     "update:snapshots": "npx playwright test --project=screenshot-tests --update-snapshots",
     "sonar:local": "sonar-scanner -Dsonar.host.url=http://localhost:9000",
     "sonar:cloud": "sonar-scanner",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "perf:browse:short": "SHORT_RUN=1 k6 run perf/scripts/browse.js",
+    "perf:browse": "k6 run perf/scripts/browse.js",
+    "perf:quick:short": "SHORT_RUN=1 k6 run perf/scripts/quick-purchase.js",
+    "perf:quick": "k6 run perf/scripts/quick-purchase.js",
+    "perf:all:short": "npm run perf:browse:short && npm run perf:quick:short",
+    "perf:all": "npm run perf:browse && npm run perf:quick"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx,json,md,yml,yaml}": [
@@ -32,10 +38,10 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@faker-js/faker": "^9.9.0",
-    "@playwright/test": "1.54.1",
+    "@faker-js/faker": "^10.0.0",
+    "@playwright/test": "^1.56.0",
     "@types/node": "^22.10.2",
-    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
     "@typescript-eslint/parser": "^8.24.0",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
@@ -45,10 +51,10 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "prettier": "^3.5.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.2.3",
     "envalid": "^8.0.0"
   },
   "overrides": {

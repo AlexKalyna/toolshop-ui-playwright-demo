@@ -11,7 +11,7 @@ import { Checkout } from '../../../pages/checkout.page';
 import { Favorites } from '../../../pages/user/favorites.page';
 import { Profile } from '../../../pages/user/profile.page';
 import { Base } from '../../../components/base.components';
-import { Dashboard } from '../../../pages/admin/dasboard.page';
+import { Dashboard } from '../../../pages/admin/dashboard.page';
 import { Application } from '../../../index';
 
 export class DefaultPageFactory implements PageFactory {

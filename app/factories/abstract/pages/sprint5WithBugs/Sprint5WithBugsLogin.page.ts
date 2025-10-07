@@ -26,8 +26,8 @@ export class Sprint5WithBugsLogin extends Login {
     // You can adjust this logic to match the real bug
     const title = await this.page.locator('div.container.auth-container > div > div > h3').textContent();
     if (title !== 'Login') {
-      // Log or handle the bug as needed
-      console.warn('Known bug: Login page title is incorrect or missing:', title);
+      // Known bug: Login page title is incorrect or missing
+      // This is expected behavior for the buggy implementation
     }
   }
 }
