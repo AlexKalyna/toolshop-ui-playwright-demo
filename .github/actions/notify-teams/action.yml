@@ -48,33 +48,15 @@ runs:
               "activitySubtitle": ("Workflow: " + $workflow),
               "text": $message,
               "facts": [
-                {
-                  "name": "Repository:",
-                  "value": $repository
-                },
-                {
-                  "name": "Branch:",
-                  "value": $refName
-                },
-                {
-                  "name": "Commit:",
-                  "value": $sha
-                },
-                {
-                  "name": "Triggered by:",
-                  "value": $actor
-                },
-                {
-                  "name": "Status:",
-                  "value": $status
-                },
-                {
-                  "name": "Workflow URL:",
-                  "value": ("[View Details](" + $workflowUrl + ")")
-                }
+                {"name": "Repository:", "value": $repository},
+                {"name": "Branch:", "value": $refName},
+                {"name": "Commit:", "value": $sha},
+                {"name": "Triggered by:", "value": $actor},
+                {"name": "Status:", "value": $status},
+                {"name": "Workflow URL:", "value": ("[View Details](" + $workflowUrl + ")")}
               ]
-            }]'
-        )
+            }]
+          }')
 
         # Send the notification using the safely constructed payload
         curl -H "Content-Type: application/json" \
