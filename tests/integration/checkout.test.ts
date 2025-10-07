@@ -25,9 +25,8 @@ shopTest.describe('Order products', () => {
       await checkout.clickConfirmButton();
       await checkout.expectSuccessPaymentMessage();
       await checkout.clickConfirmButton();
-      //TBD: Update test lines below
-      const invoiceId = await checkout.expectOrderPlaced();
-      console.log('Your invoice ID is: ', invoiceId);
+      await checkout.expectOrderPlaced();
+      // Invoice ID is available for assertions if needed
     }
   );
 

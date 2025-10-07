@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { TestDataFactory } from '../interfaces/TestDataFactory';
 import { UserTestData } from '../types/TestData';
+import { env } from '../../../../env';
 
 // Concrete factory for creating user test data
 export class UserDataFactory implements TestDataFactory {
@@ -12,7 +13,7 @@ export class UserDataFactory implements TestDataFactory {
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      username: faker.internet.userName(),
+      username: faker.internet.username(),
       phone: faker.phone.number()
     };
   }
@@ -22,9 +23,9 @@ export class UserDataFactory implements TestDataFactory {
     const userData = this.createTestData();
     return {
       ...userData,
-      email: 'admin@practicesoftwaretesting.com',
-      password: 'welcome01',
-      username: 'admin'
+      email: env.ADMIN_EMAIL,
+      password: env.ADMIN_PASSWORD,
+      username: env.ADMIN_USERNAME
     };
   }
 
@@ -32,9 +33,9 @@ export class UserDataFactory implements TestDataFactory {
     const userData = this.createTestData();
     return {
       ...userData,
-      email: 'customer@practicesoftwaretesting.com',
-      password: 'welcome01',
-      username: 'customer'
+      email: env.CUSTOMER_EMAIL,
+      password: env.CUSTOMER_PASSWORD,
+      username: env.CUSTOMER_USERNAME
     };
   }
 }

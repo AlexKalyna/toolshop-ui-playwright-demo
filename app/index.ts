@@ -36,7 +36,7 @@ export class Application extends PageHolder {
         throw new Error('No access token received');
       }
       await this.setTokenToLocalStorage(token);
-      console.log('Token set to local storage successfully');
+      // Token stored in local storage
     } catch (error) {
       console.error('Error during headless login:', error);
     }

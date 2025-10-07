@@ -8,3 +8,24 @@ node_modules/
 .DS_Store
 .cursor/
 perf/.perf.env
+/.scannerwork/
+
+# IDE and editor files
+.qodo/
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Keep .husky/ (needed for pre-commit hooks)

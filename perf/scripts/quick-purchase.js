@@ -41,9 +41,9 @@ export default function () {
   const loginRes = post(
     `${env.API_URL}users/login`,
     {
-      username: env.CUSTOMER_USERNAME || env.CUSTOMER_EMAIL || 'customer@practicesoftwaretesting.com',
-      email: env.CUSTOMER_EMAIL || 'customer@practicesoftwaretesting.com',
-      password: env.CUSTOMER_PASSWORD || 'welcome01'
+      username: env.CUSTOMER_USERNAME || env.CUSTOMER_EMAIL,
+      email: env.CUSTOMER_EMAIL,
+      password: env.CUSTOMER_PASSWORD
     },
     { tags: loginTags }
   );

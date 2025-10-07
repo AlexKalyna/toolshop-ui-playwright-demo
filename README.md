@@ -129,21 +129,7 @@ This project includes comprehensive code review tools and guidelines for maintai
 - **Review Templates**: Enhanced PR templates with analytics
 - **Review Process**: Structured 3-phase review process
 
-### Local Review Tools
-
-```bash
-# Check for TODO comments
-npm run review:todo
-
-# Analyze code complexity
-npm run review:complexity
-
-# Scan for potential secrets
-npm run review:secrets
-
-# Generate review analytics
-npm run review:analytics
-```
+For deeper documentation and examples, see `docs/`.
 
 ### Automated Review Features
 
@@ -185,10 +171,10 @@ Each anti-pattern includes references to where it's properly implemented in the 
 │   ├── factories/          # Design pattern implementations
 │   └── pages/              # Page objects
 ├── tests/
-│   ├── integration/        # Integration tests
-│   ├── unit/              # Unit tests
-│   └── screenshot/        # Visual regression tests
-├── bad-code-examples/     # Anti-pattern examples (educational)
+│   ├── integration/        # Curated integration tests (default)
+│   ├── _extras/            # Additional demos (ignored by default)
+│   └── screenshot/         # Visual regression tests
+├── docs/bad-code-examples/ # Anti-pattern examples (educational)
 ├── .github/
 │   ├── actions/           # Composite actions
 │   └── workflows/         # CI/CD workflows
@@ -201,7 +187,7 @@ Each anti-pattern includes references to where it's properly implemented in the 
 
 1. Create a feature branch: `feature/ARC-XXXX--description`
 2. Follow the coding standards enforced by ESLint and Prettier
-3. Use local review tools: `npm run review:*`
+3. See `docs/` for extra demos and deep dives
 4. Ensure all tests pass
 5. Submit a pull request following the review guidelines
 

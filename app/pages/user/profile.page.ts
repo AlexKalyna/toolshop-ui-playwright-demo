@@ -71,14 +71,14 @@ export class Profile extends AppPage {
 
   @step()
   async clickUpdateProfileButton() {
-    const [response] = await Promise.all([
+    await Promise.all([
       this.page.waitForResponse(
         response =>
           response.url().includes('/users/') && response.status() === 200 && response.request().method() === 'PUT'
       ),
       this.updateProfileButton.click()
     ]);
-    console.log('Profile update response:', await response.json());
+    // Response available if further validation is needed
   }
 
   @step()

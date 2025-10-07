@@ -39,7 +39,7 @@ export default [
       'build',
       'playwright-report',
       'test-results',
-      'bad-code-examples',
+      'docs/bad-code-examples',
       '.github/CODEOWNERS',
       '.github/ISSUE_TEMPLATE/*',
       '.github/pull_request_template.md',
