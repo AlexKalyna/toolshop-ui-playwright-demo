@@ -21,7 +21,8 @@ export default defineConfig({
   reporter: [
     ['list', { printSteps: true }],
     ['junit', { outputFile: 'test-results/junit.xml' }],
-    ['html', { open: 'never' }]
+    ['html', { open: 'never' }],
+    ['blob', { outputDir: 'blob-report' }]
   ],
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
