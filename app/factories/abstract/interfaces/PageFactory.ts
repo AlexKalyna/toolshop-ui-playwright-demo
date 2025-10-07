@@ -9,7 +9,7 @@ import type { Checkout } from '../../../pages/checkout.page';
 import type { Favorites } from '../../../pages/user/favorites.page';
 import type { Profile } from '../../../pages/user/profile.page';
 import type { Base } from '../../../components/base.components';
-import type { Dashboard } from '../../../pages/admin/dasboard.page';
+import type { Dashboard } from '../../../pages/admin/dashboard.page';
 
 export interface PageFactory {
   createLoginPage(): Login;

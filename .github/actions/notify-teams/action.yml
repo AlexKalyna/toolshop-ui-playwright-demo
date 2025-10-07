@@ -26,42 +26,57 @@ runs:
     - name: Send Teams Notification
       shell: bash
       run: |
-        curl -H "Content-Type: application/json" \
-          -d '{
+        # Create JSON payload safely using jq to avoid injection
+        PAYLOAD=$(jq -n \
+          --arg themeColor "${{ inputs.theme_color }}" \
+          --arg title "${{ inputs.title }}" \
+          --arg message "${{ inputs.message }}" \
+          --arg status "${{ inputs.status }}" \
+          --arg workflow "${{ github.workflow }}" \
+          --arg repository "${{ github.repository }}" \
+          --arg refName "${{ github.ref_name }}" \
+          --arg sha "${{ github.sha }}" \
+          --arg actor "${{ github.actor }}" \
+          --arg workflowUrl "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+          '{
             "@type": "MessageCard",
             "@context": "http://schema.org/extensions",
-            "themeColor": "${{ inputs.theme_color }}",
-            "summary": "${{ inputs.title }}",
+            "themeColor": $themeColor,
+            "summary": $title,
             "sections": [{
-              "activityTitle": "${{ inputs.title }}",
-              "activitySubtitle": "Workflow: ${{ github.workflow }}",
-              "text": "${{ inputs.message }}",
+              "activityTitle": $title,
+              "activitySubtitle": ("Workflow: " + $workflow),
+              "text": $message,
               "facts": [
                 {
                   "name": "Repository:",
-                  "value": "${{ github.repository }}"
+                  "value": $repository
                 },
                 {
                   "name": "Branch:",
-                  "value": "${{ github.ref_name }}"
+                  "value": $refName
                 },
                 {
                   "name": "Commit:",
-                  "value": "${{ github.sha }}"
+                  "value": $sha
                 },
                 {
                   "name": "Triggered by:",
-                  "value": "${{ github.actor }}"
+                  "value": $actor
                 },
                 {
                   "name": "Status:",
-                  "value": "${{ inputs.status }}"
+                  "value": $status
                 },
                 {
                   "name": "Workflow URL:",
-                  "value": "[View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+                  "value": ("[View Details](" + $workflowUrl + ")")
                 }
               ]
-            }]
-          }' \
+            }]'
+        )
+
+        # Send the notification using the safely constructed payload
+        curl -H "Content-Type: application/json" \
+          -d "$PAYLOAD" \
           "${{ inputs.webhook_url }}"
