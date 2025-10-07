@@ -134,8 +134,28 @@ jobs:
           path: all-blob-reports
           pattern: blob-report-*
           merge-multiple: true
+        continue-on-error: true
+
+      - name: Check if reports exist
+        run: |
+          if [ ! -d "./all-blob-reports" ] || [ -z "$(ls -A ./all-blob-reports 2>/dev/null)" ]; then
+            echo "No blob reports found, creating empty directory"
+            mkdir -p ./all-blob-reports
+            echo "No test results to merge" > ./all-blob-reports/no-results.txt
+          else
+            echo "Found blob reports:"
+            ls -la ./all-blob-reports
+          fi
+
       - name: Merge Results into HTML Report
-        run: npx playwright merge-reports --reporter html ./all-blob-reports
+        run: |
+          if [ -f "./all-blob-reports/no-results.txt" ]; then
+            echo "No test results to merge, creating empty report"
+            mkdir -p playwright-report
+            echo "<html><body><h1>No test results available</h1></body></html>" > playwright-report/index.html
+          else
+            npx playwright merge-reports --reporter html ./all-blob-reports
+          fi
 
       - name: Upload HTML Test Report
         uses: actions/upload-artifact@v4
