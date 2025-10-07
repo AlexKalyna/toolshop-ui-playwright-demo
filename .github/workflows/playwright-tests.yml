@@ -241,7 +241,7 @@ jobs:
     name: Notify Teams on Failure
     runs-on: ubuntu-latest
     if: failure()
-    needs: [merge-reports, test-analytics, deploy-dev, deploy-staging, deploy-production]
+    needs: [merge-reports, test-analytics]
     continue-on-error: true
     steps:
       - name: Checkout code
@@ -259,7 +259,7 @@ jobs:
     name: Notify Teams on Success
     runs-on: ubuntu-latest
     if: success()
-    needs: [merge-reports, test-analytics, deploy-dev, deploy-staging, deploy-production]
+    needs: [merge-reports, test-analytics]
     continue-on-error: true
     steps:
       - name: Checkout code
